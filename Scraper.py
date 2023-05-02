@@ -7,13 +7,14 @@ from wasmtime import Store,Module,Instance
 import json
 import os
 
-
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import sys
 sys.path.append(ROOT_DIR)
 
-from apis import api_dict
+from nepse_scraper import api_dict
+
+# from apis import api_dict
 import paths
 
 class TokenParser():

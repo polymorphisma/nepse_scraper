@@ -8,15 +8,23 @@ But that's not all! With the power of Python libraries such as **pandas**, you c
 
 So what are you waiting for? Try out **nepse_scraper** and see how it can simplify your stock market analysis and investment strategies.
 
-### Installation
-#### Cloning 
+
+## Features
+- Get Today Price
+- Get Head Indices
+- Get Market Summary
+- Get Sector Summary
+
+
+## Installation
+### Cloning 
 
 ```
 git clone git@github.com:polymorphisma/nepse_scraper.git
 ```
 
 
-#### Downloading Dependencies
+### Downloading Dependencies
 ```
 pip install -r requirements.txt
 ```
