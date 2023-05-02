@@ -14,6 +14,18 @@ So what are you waiting for? Try out **nepse_scraper** and see how it can simpli
 - Get Head Indices
 - Get Market Summary
 - Get Sector Summary
+- Get Broker Details
+- Get News
+- Get Top Gainer
+- Get Top Loser
+- Get Top Trade
+- Get Top Transaction
+- Get Top Turnover
+- Get Today Market Summary
+- Get Security Detail
+- Get Marketcap
+- Get Trading Average
+- Get Sector Detail
 
 
 ## Installation
