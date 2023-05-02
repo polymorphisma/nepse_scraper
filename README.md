@@ -17,7 +17,7 @@ So what are you waiting for? Try out **nepse_scraper** and see how it can simpli
 - Get Sector Detail
 - Get Broker Details
 - Get News
-- Many More
+- Many More ....
 <!-- - Get Top Gainer
 - Get Top Loser
 - Get Top Trade
