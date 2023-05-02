@@ -7,3 +7,24 @@ But that's not all! With the power of Python libraries such as **pandas**, you c
 **nepse_scraper** is open-source, which means you can contribute and improve the code by adding new functions to retrieve additional data, enhancing existing functions with more options, or improving the error handling and exception handling to make it more robust. Your contributions can help make **nepse_scraper** even more useful for developers and analysts who work with data from the Nepal Stock Exchange.
 
 So what are you waiting for? Try out **nepse_scraper** and see how it can simplify your stock market analysis and investment strategies.
+
+### Installatoin
+#### Cloning 
+
+```
+git clone git@github.com:polymorphisma/nepse_scraper.git
+
+```
+
+
+#### Downloading Dependencies
+```
+pip install -r requirements.txt
+```
+
+or 
+
+```
+pip install requests urllib3 wasmtime retrying
+```
+

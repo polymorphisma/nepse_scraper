@@ -1,11 +1,12 @@
 import requests
-from datetime import datetime
+from datetime import datetime, date
 from urllib3.exceptions import InsecureRequestWarning
 from urllib3 import disable_warnings
 import time
 from wasmtime import Store,Module,Instance
 import json
 import os
+
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -147,7 +148,9 @@ class Nepse:
         headers = {'Authorization': f'Salter {access_token[0]}', **self.headers}
         payload = {'id': self.parser_obj.return_payload(access_token, which=which_payload)}
 
-        querystring = None
+
+        querystring = {"page":"0","size":"500"}
+
 
         if date_ != None:
             querystring = {"page":"0","size":"500","businessDate":date_}
@@ -201,8 +204,6 @@ class Request_module:
     def __init__(self) -> None:
         self.nepse_obj = Nepse()
         self.desired_status = 200
-        # self.interval = 5 * 60
-        # self.start_time = time.time()
 
     @retry(wait_fixed = 3000) # retry every 3 seconds
     def call_nepse_function(self, url, method, date_=None):
@@ -218,7 +219,26 @@ class Request_module:
         except Exception as exp:
             print(exp)
             raise ValueError('Unexpected Error: {}'.format(exp))
-    
+        
+    def is_trading_day(self):
+        """
+        Check if today is a trading day on the Nepal Stock Exchange (NEPSE).
+        
+        Returns:
+            True if today is a trading day, False otherwise.
+        """
+        api = api_dict['marketopen_api']['api']
+        method = api_dict['marketopen_api']['method']
+
+        response = self.call_nepse_function(url=api, method=method)
+
+        date_ = response['asOf'].split('T')[0]
+
+        if date_ != str(date.today()):
+            return False
+        
+        return True
+
     def get_today_price(self, date_= None) -> json:
         api = api_dict['today_price_api']['api']
         method = api_dict['today_price_api']['method']
@@ -257,16 +277,22 @@ class Request_module:
     
     # def 
     
-    
+import pandas as pd
 def main():
     request_obj = Request_module()
-    today_price = request_obj.get_today_price()
-    response = request_obj.get_market_summary()
-    head_indices = request_obj.get_head_indices()
+    print(request_obj.is_trading_day())
+    # head_indices = request_obj.get_head_indices()
+    # today_price = request_obj.get_today_price()
 
-    print(today_price)
-    print(response)
-    print(head_indices)
+    # df = pd.DataFrame(head_indices['content'])
+    # print(df)
+
+    # print(today_price)
+    # response = request_obj.get_market_summary()
+
+    # print(today_price)
+    # print(response)
+    # print(head_indices)
 
 
 if __name__ == '__main__':
