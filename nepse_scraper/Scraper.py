@@ -15,6 +15,10 @@ sys.path.append(ROOT_DIR)
 import paths
 from apis import api_dict
 
+ROOT_URL = 'https://www.nepalstock.com.np'
+SLEEP_TIME = 3000 # -> wait time for every failed request(in milisecond)
+
+
 class TokenParser():
     def __init__(self):
         self.store = Store()
@@ -52,7 +56,7 @@ class TokenParser():
 class PayloadParser():
     def __init__(self):
         self.dummyData = [147, 117, 239, 143, 157, 312, 161, 612, 512, 804, 411, 527, 170, 511, 421, 667, 764, 621, 301, 106, 133, 793, 411, 511, 312, 423, 344, 346, 653, 758, 342, 222, 236, 811, 711, 611, 122, 447, 128, 199, 183, 135, 489, 703, 800, 745, 152, 863, 134, 211, 142, 564, 375, 793, 212, 153, 138, 153, 648, 611, 151, 649, 318, 143, 117, 756, 119, 141, 717, 113, 112, 146, 162, 660, 693, 261, 362, 354, 251, 641, 157, 178, 631, 192, 734, 445, 192, 883, 187, 122, 591, 731, 852, 384, 565, 596, 451, 772, 624, 691]
-        self.url = api_dict["marketopen_api"]["api"]
+        self.url = ROOT_URL + api_dict["marketopen_api"]["api"]
         self.method = api_dict["marketopen_api"]['method']
         self.payload = {}
         self.headers = {
@@ -111,23 +115,23 @@ class Nepse:
         self.parser_obj = PayloadParser()
         self.token_parser= TokenParser()
 
-        self.token_url = api_dict['authenticate_api']['api'] 
+        self.token_url = ROOT_URL + api_dict['authenticate_api']['api'] 
         self.token_method = api_dict['authenticate_api']['method'] 
 
         self.headers = {
-            'Host': 'newweb.nepalstock.com',
+            'Host': 'www.nepalstock.com.np',
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
-            'Referer': 'https://www.nepalstock.com/',
+            'Referer': 'https://www.nepalstock.com.np/',
             'Pragma': 'no-cache',
             'Cache-Control': 'no-cache',
             'TE': 'Trailers',
         }
 
-    def request_api(self, url, access_token, method='GET', which_payload = None, date_= None):
+    def request_api(self, url, access_token, method='GET', which_payload = None, querystring = None, payload=None):
         """
         this method/fucnion returns the data form requested url in json format
         
@@ -145,14 +149,10 @@ class Nepse:
                 returns the json file accured after requsting to the api
         """
         headers = {'Authorization': f'Salter {access_token[0]}', **self.headers}
-        payload = {'id': self.parser_obj.return_payload(access_token, which=which_payload)}
 
+        if payload == None:
+            payload = {'id': self.parser_obj.return_payload(access_token, which=which_payload)}
 
-        querystring = {"page":"0","size":"500"}
-
-
-        if date_ != None:
-            querystring = {"page":"0","size":"500","businessDate":date_}
 
         # Send the request with the given parameters
         try:
@@ -193,8 +193,8 @@ class Nepse:
      
         return [self.token_parser.parse_token_response(token_response)[0], token_response]
     
-    def return_data(self, url, access_token, method='GET', which_payload=None, date_ = None):
-        return self.request_api(method=method, url = url, access_token = access_token, date_= date_, which_payload=which_payload)
+    def return_data(self, url, access_token, method='GET', which_payload=None,  querystring = None, payload=None):
+        return self.request_api(method=method, url = url, access_token = access_token, which_payload=which_payload, querystring=querystring, payload=payload)
 
 from retrying import retry
 import csv
@@ -204,11 +204,11 @@ class Request_module:
         self.nepse_obj = Nepse()
         self.desired_status = 200
 
-    @retry(wait_fixed = 3000) # retry every 3 seconds
-    def call_nepse_function(self, url, method, date_=None):
+    @retry(wait_fixed = SLEEP_TIME)
+    def call_nepse_function(self, url, method,  querystring=None, payload=None):
         try:
             access_token = self.nepse_obj.get_valid_token()
-            response = self.nepse_obj.return_data(url, access_token=access_token, method=method, date_= date_)
+            response = self.nepse_obj.return_data(url, access_token=access_token, method=method, querystring=querystring, payload=payload)
 
             if response.status_code != self.desired_status:
                 raise ValueError('Unexpected status code: {}'.format(response.status_code))
@@ -226,7 +226,7 @@ class Request_module:
         Returns:
             True if today is a trading day, False otherwise.
         """
-        api = api_dict['marketopen_api']['api']
+        api = ROOT_URL + api_dict['marketopen_api']['api']
         method = api_dict['marketopen_api']['method']
 
         response = self.call_nepse_function(url=api, method=method)
@@ -239,14 +239,18 @@ class Request_module:
         return True
 
     def get_today_price(self, date_= None) -> json:
-        api = api_dict['today_price_api']['api']
+        api = ROOT_URL + api_dict['today_price_api']['api']
         method = api_dict['today_price_api']['method']
 
-        return self.call_nepse_function(url=api, method=method, date_=date_)
+        querystring = {"page":"0","size":"500","businessDate":date_}
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
     def get_head_indices(self) -> dict:
-        api = api_dict['head_indices_api']['api']
+        api = ROOT_URL + api_dict['head_indices_api']['api']
         method = api_dict['head_indices_api']['method']
+
+        querystring = {"page":"0","size":"500"}
 
         dicts = {}
 
@@ -258,41 +262,116 @@ class Request_module:
             for row_values in csv_reader:
                 index_name = row_values[0]
                 print(index_name)
-                dicts[index_name] = self.call_nepse_function(url=api + index_name, method=method)
+                dicts[index_name] = self.call_nepse_function(url=api + index_name, method=method, querystring=querystring)
 
         return dicts
     
-    def get_sectorwise_summary(self):
-        api = api_dict['sectorwise_summary_api']['api']
+    def get_sectorwise_summary(self, date_=None):
+        api = ROOT_URL + api_dict['sectorwise_summary_api']['api']
         method = api_dict['sectorwise_summary_api']['method']
+
+        querystring = {"page":"0","size":"500","businessDate":date_}
+
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
+
+    def get_market_summary(self, date_ = None):
+        api = ROOT_URL + api_dict['market_summary_history_api']['api']
+        method = api_dict['market_summary_history_api']['method']
+
+        querystring = {"page":"0","size":"500","businessDate":date_}
+
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
+    
+    def get_news(self):
+        api = ROOT_URL + api_dict['disclosure']['api']
+        method = api_dict['disclosure']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+    
+    def get_top_gainer(self):
+        api = ROOT_URL + api_dict['top_gainer']['api']
+        method = api_dict['top_gainer']['method']
+
+
+        return self.call_nepse_function(url=api, method=method)
+    
+    def get_top_loser(self):
+        api = ROOT_URL + api_dict['top_loser']['api']
+        method = api_dict['top_loser']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+    
+    def get_top_turnover(self):
+        api = ROOT_URL + api_dict['top_turnover']['api']
+        method = api_dict['top_turnover']['method']
+
 
         return self.call_nepse_function(url=api, method=method)
 
-    def get_market_summary(self):
-        api = api_dict['market_summary_api']['api']
+    def get_top_trade(self):
+        api = ROOT_URL + api_dict['top_trade']['api']
+        method = api_dict['top_trade']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+
+    def get_top_transaction(self):
+        api = ROOT_URL + api_dict['top_transaction']['api']
+        method = api_dict['top_transaction']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+    
+    def get_today_market_summary(self):
+        api = ROOT_URL + api_dict['market_summary_api']['api']
         method = api_dict['market_summary_api']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+
+    def get_security_detail(self):
+        api = ROOT_URL + api_dict['security_api']['api']
+        method = api_dict['security_api']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+    
+    def get_marketcap(self):
+        api = ROOT_URL + api_dict['marketcap_api']['api']
+        method = api_dict['marketcap_api']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
 
-import pandas as pd
+    def get_trading_average(self, date_=None, n_days=120):
+        api = ROOT_URL + api_dict['trading_average_api']['api']
+        method = api_dict['trading_average_api']['method']
 
-def main():
-    request_obj = Request_module()
-    print(request_obj.is_trading_day())
-    # head_indices = request_obj.get_head_indices()
-    # today_price = request_obj.get_today_price()
+        querystring = {"page":"0","size":"500","businessDate":date_,"nDays":n_days}
 
-    # df = pd.DataFrame(head_indices['content'])
-    # print(df)
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
+    
+    def get_broker(self, member_name= "", contact_person="", contact_number = "", member_code="", province_id = 0, district_id = 0, municipality_id = 0):
 
-    # print(today_price)
-    # response = request_obj.get_market_summary()
-
-    # print(today_price)
-    # print(response)
-    # print(head_indices)
+        api = ROOT_URL + api_dict['broker_api']['api']
+        method = api_dict['broker_api']['method']
+        querystring = {"page":"0","size":"500"}
 
 
-if __name__ == '__main__':
-    main()
+        payload = {
+            "memberName": member_name,
+            "contactPerson": contact_person,
+            "contactNumber": contact_number,
+            "memberCode": member_code,
+            "provinceId": province_id,
+            "districtId": district_id,
+            "municipalityId": municipality_id
+        }
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring, payload=payload)
+    
+    def get_sector_detail(self):
+        api = ROOT_URL + api_dict['sector_api']['api']
+        method = api_dict['sector_api']['method']
+        querystring = {"page":"0","size":"500"}
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
+    
