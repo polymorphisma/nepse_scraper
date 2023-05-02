@@ -29,7 +29,7 @@ git clone git@github.com:polymorphisma/nepse_scraper.git
 pip install -r requirements.txt
 ```
 
-or 
+_or_ 
 
 ```
 pip install requests urllib3 wasmtime retrying
