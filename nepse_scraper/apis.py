@@ -18,5 +18,4 @@ api_dict = {
     "trading_average_api":{"api":"/api/nots/nepse-data/trading-average","method":"GET"},
     "broker_api":{"api":"/api/nots/member","method":"POST"},
     "sector_api":{"api":"/api/nots/sector", "method":"GET"},
-    
 }
