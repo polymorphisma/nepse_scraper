@@ -1,4 +1,4 @@
-# nepse_scraper
+# _nepse_scraper_
 
 Welcome to **nepse_scraper**, the Python module that provides easy access to the Nepal Stock Exchange (NEPSE) API. With just a few lines of code, you can retrieve today's stock prices, market summary, head indices and etc to help you make better investment decisions. The code is well-documented and organized, making it easy to understand and modify for your specific use case.
 
@@ -49,7 +49,7 @@ pip install requests urllib3 wasmtime retrying
 ```
 
 ### Usage
-```
+```py
 from nepse_scraper import Request_module
 
 request_obj = Request_module()
