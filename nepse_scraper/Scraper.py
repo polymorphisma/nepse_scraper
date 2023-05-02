@@ -12,10 +12,8 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 import sys
 sys.path.append(ROOT_DIR)
 
-from nepse_scraper import api_dict
-
-# from apis import api_dict
 import paths
+from apis import api_dict
 
 class TokenParser():
     def __init__(self):
@@ -276,9 +274,9 @@ class Request_module:
 
         return self.call_nepse_function(url=api, method=method)
     
-    # def 
-    
+
 import pandas as pd
+
 def main():
     request_obj = Request_module()
     print(request_obj.is_trading_day())
