@@ -33,7 +33,7 @@ So what are you waiting for? Try out **nepse_scraper** and see how it can simpli
 
 ### Using Pip
 ```
-pip install nepse-scraper==0.1
+pip install nepse-scraper
 ```
 ### Cloning 
 
