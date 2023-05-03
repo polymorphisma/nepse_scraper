@@ -219,12 +219,15 @@ class Request_module:
             print(exp)
             raise ValueError('Unexpected Error: {}'.format(exp))
         
-    def is_trading_day(self):
+    def is_trading_day(self) -> bool:
         """
         Check if today is a trading day on the Nepal Stock Exchange (NEPSE).
-        
+
+        This method queries the NEPSE API to determine if today is a trading day or not.
+        If today is a trading day, it returns True, otherwise it returns False.
+
         Returns:
-            True if today is a trading day, False otherwise.
+            bool: True if today is a trading day, False otherwise.
         """
         api = ROOT_URL + api_dict['marketopen_api']['api']
         method = api_dict['marketopen_api']['method']
@@ -238,7 +241,23 @@ class Request_module:
         
         return True
 
-    def get_today_price(self, date_= None) -> json:
+    def get_today_price(self, date_ : str = None) -> json:
+        """
+        Get today's trading data for from Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the trading data for the current date or a specified date.
+        The data is returned as a json response.
+
+        Args:
+            date_ (str, optional): The date for which trading data should be retrieved in "YYYY-MM-DD" format. Defaults to None,
+                which retrieves data for the current date.(Date should be from today to one year prior)
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+        Raises:
+            ValueError: If the date string is not in the "YYYY-MM-DD" format.
+        """
         api = ROOT_URL + api_dict['today_price_api']['api']
         method = api_dict['today_price_api']['method']
 
@@ -247,6 +266,15 @@ class Request_module:
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
     def get_head_indices(self) -> dict:
+        """
+        Retrieve the head indices data from the Nepal Stock Exchange (NEPSE).
+
+        This method reads the head indices file located at paths.headindices_path and queries the NEPSE API to retrieve
+        data. The data is returned as a dictionary containing index as keys and the corresponding index data as values.
+
+        Returns:
+            dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
+        """
         api = ROOT_URL + api_dict['head_indices_api']['api']
         method = api_dict['head_indices_api']['method']
 
@@ -266,16 +294,44 @@ class Request_module:
 
         return dicts
     
-    def get_sectorwise_summary(self, date_=None):
+    def get_sectorwise_summary(self, date_ : str =None) -> json:
+        """
+        Retrieve the sector-wise summary from a given business date from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the sector-wise summary for a given business date.
+        If no date is specified, the default behavior is to retrieve the sector-wise summary for the current business date.
+        The sector-wise summary is returned as a json response from NEPSE API.
+
+        Args:
+            date_ (str, optional): The business date for which to retrieve the sector-wise summary, in YYYY-MM-DD format.
+                Defaults to None, in which case the sector-wise summary for all the data avialable on {nepalstock.com.np}.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
+
         api = ROOT_URL + api_dict['sectorwise_summary_api']['api']
         method = api_dict['sectorwise_summary_api']['method']
 
         querystring = {"page":"0","size":"500","businessDate":date_}
 
-
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
 
-    def get_market_summary(self, date_ = None):
+    def get_market_summary(self, date_ : str = None) -> json:
+        """
+        Retrieve the market summary from a given business date from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the market summary for a given business date.
+        If no date is specified, the default behavior is to retrieve the market summary for the current business date.
+        The market summary is returned as a dictionary with various statistics as keys and corresponding values.
+
+        Args:
+            date_ (str, optional): The business date for which to retrieve the market summary, in YYYY-MM-DD format.
+            Defaults to None, in which case the market summary for the current business date is retrieved.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['market_summary_history_api']['api']
         method = api_dict['market_summary_history_api']['method']
 
@@ -284,64 +340,165 @@ class Request_module:
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
-    def get_news(self):
+    def get_news(self) -> json:
+        """
+        Retrieve the latest news and announcements from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the latest news and announcements regarding listed companies.
+        The news and announcements are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['disclosure']['api']
         method = api_dict['disclosure']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
-    def get_top_gainer(self):
+    def get_top_gainer(self) -> json:
+        """
+        Retrieve the all the gains of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the gains of ticker in terms of share price.
+        The all the gains of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['top_gainer']['api']
         method = api_dict['top_gainer']['method']
 
 
         return self.call_nepse_function(url=api, method=method)
     
-    def get_top_loser(self):
+    def get_top_loser(self) -> json:
+        """
+        Retrieve the all the loser of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the loser of ticker in terms of share price.
+        The all the loser of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['top_loser']['api']
         method = api_dict['top_loser']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
-    def get_top_turnover(self):
+    def get_top_turnover(self) -> json:
+        """
+        Retrieve the all the turnover of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the turnover of ticker in terms of share price.
+        The all the turnover of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['top_turnover']['api']
         method = api_dict['top_turnover']['method']
 
 
         return self.call_nepse_function(url=api, method=method)
 
-    def get_top_trade(self):
+    def get_top_trade(self) -> json:
+        """
+        Retrieve the all the trade of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the trade of ticker in terms of share price.
+        The all the trade of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['top_trade']['api']
         method = api_dict['top_trade']['method']
 
         return self.call_nepse_function(url=api, method=method)
 
-    def get_top_transaction(self):
+    def get_top_transaction(self) -> json:
+        """
+        Retrieve the all the transaction of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the transaction of ticker in terms of share price.
+        The all the transaction of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['top_transaction']['api']
         method = api_dict['top_transaction']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
-    def get_today_market_summary(self):
+    def get_today_market_summary(self) -> json:
+
+        """
+        Retrieve today's market summary from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve today's market summary, which includes information
+        such as the current NEPSE index value, trading volume, and the number of transactions.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['market_summary_api']['api']
         method = api_dict['market_summary_api']['method']
 
         return self.call_nepse_function(url=api, method=method)
 
-    def get_security_detail(self):
+    def get_security_detail(self) -> json:
+
+        """
+        Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve security detail information, which includes the
+        names and codes of all listed securities on the NEPSE, along with their market prices and other
+        relevant data.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['security_api']['api']
         method = api_dict['security_api']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
-    def get_marketcap(self):
+    def get_marketcap(self) -> json:
+        """
+        Retrieve market capitalization data from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve market capitalization data for all listed securities
+        on the NEPSE.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['marketcap_api']['api']
         method = api_dict['marketcap_api']['method']
 
         return self.call_nepse_function(url=api, method=method)
     
 
-    def get_trading_average(self, date_=None, n_days=120):
+    def get_trading_average(self, date_ : str = None, n_days : int =120) -> json:
+        """
+        Retrieve the trading average for the specified number of days ending on the given date (or today if date is not
+        specified).
+
+        Args:
+            date_: A string representing the date (in YYYY-MM-DD format) for which to retrieve the trading average. If
+                not specified, the method will retrieve the trading average for today.
+            n_days: An integer representing the number of days to include in the trading average calculation. The default
+                value is 120.
+        Returns:
+            json: A json response returned by NEPSE API.
+        Raises:
+            ValueError: If n_days is less than or equal to zero.
+        """
+        if n_days < 1 or n_days > 180:
+            raise ValueError(r"n_days must be between 1 and 180")
+        
         api = ROOT_URL + api_dict['trading_average_api']['api']
         method = api_dict['trading_average_api']['method']
 
@@ -349,8 +506,22 @@ class Request_module:
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
-    def get_broker(self, member_name= "", contact_person="", contact_number = "", member_code="", province_id = 0, district_id = 0, municipality_id = 0):
+    def get_broker(self, member_name : str= "", contact_person : str ="", contact_number : str = "", member_code : str ="", province_id : int = 0, district_id : int = 0, municipality_id : int= 0):
+        """
+        Get broker information from NEPSE.
 
+        Args:
+            member_name (str, optional): The name of the broker member. Defaults to "".
+            contact_person (str, optional): The contact person name of the broker. Defaults to "".
+            contact_number (str, optional): The contact number of the broker. Defaults to "".
+            member_code (str, optional): The code of the broker member. Defaults to "".
+            province_id (int, optional): The ID of the province where the broker is located. Defaults to 0.
+            district_id (int, optional): The ID of the district where the broker is located. Defaults to 0.
+            municipality_id (int, optional): The ID of the municipality where the broker is located. Defaults to 0.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['broker_api']['api']
         method = api_dict['broker_api']['method']
         querystring = {"page":"0","size":"500"}
@@ -369,6 +540,12 @@ class Request_module:
         return self.call_nepse_function(url=api, method=method, querystring=querystring, payload=payload)
     
     def get_sector_detail(self):
+        """
+        Retrieve details of all sectors listed in the NEPSE.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
         api = ROOT_URL + api_dict['sector_api']['api']
         method = api_dict['sector_api']['method']
         querystring = {"page":"0","size":"500"}
