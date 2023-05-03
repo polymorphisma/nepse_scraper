@@ -51,7 +51,7 @@ _or_
 pip install requests urllib3 wasmtime retrying
 ```
 
-### Usage
+## Usage
 ```py
 from nepse_scraper import Request_module
 
@@ -64,7 +64,7 @@ print(today_price)
 ```
 
 
-### All Methods
+## All Methods
 - get_news()
 - get_head_indices() 
 - get_market_summary()
