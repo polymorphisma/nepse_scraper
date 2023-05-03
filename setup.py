@@ -22,6 +22,7 @@ setup(
     url='https://github.com/polymorphisma/nepse_scraper/',  
     install_requires=['requests','urllib3','wasmtime', 'retrying'],
     keywords=['python', 'nepse data', 'nepse scraper'],
+    download_url="https://github.com/polymorphisma/nepse_scraper/archive/refs/tags/v_01.tar.gz",
     classifiers=[
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Developers',

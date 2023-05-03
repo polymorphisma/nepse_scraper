@@ -78,3 +78,10 @@ print(today_price)
 - get_marketcap()
 - get_trading_average()
 - get_sector_detail()
+
+
+## License
+
+MIT
+
+**Free Software, Hell Yeah!**
