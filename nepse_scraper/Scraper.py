@@ -190,7 +190,6 @@ class Nepse:
         return self.request_api(method=method, url = url, access_token = access_token, which_payload=which_payload, querystring=querystring, payload=payload)
 
 from retrying import retry
-import csv
 
 class Request_module:
     
@@ -328,7 +327,6 @@ class Request_module:
         method = api_dict['market_summary_history_api']['method']
 
         querystring = {"page":"0","size":"500","businessDate":date_}
-
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     

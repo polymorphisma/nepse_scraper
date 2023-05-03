@@ -3,7 +3,7 @@ from os import path
 
 current_dir = path.abspath(path.dirname(__file__))
 
-VERSION = '0.1'
+VERSION = '0.1.1'
 DESCRIPTION = 'Python Scraper for Nepse'
 
 with open(path.join(current_dir, 'README.md'), encoding='utf-8') as f:
