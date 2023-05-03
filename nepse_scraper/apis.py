@@ -3,7 +3,7 @@ api_dict = {
     "today_price_api": {"api":"/api/nots/nepse-data/today-price", "method":"POST"},
     "marketopen_api":{"api":"/api/nots/nepse-data/market-open", "method":"GET"},
     "refer_api":{"api":"", "method":"GET"},
-    "head_indices_api":{"api":"/api/nots/index/history/", "method":"GET"}, # -> should add index ID like https://www.nepalstock.com/api/nots/index/history/51
+    "head_indices_api":{"api":"/api/nots/index/history", "method":"GET"}, # -> should add index ID like https://www.nepalstock.com/api/nots/index/history/51
     "sectorwise_summary_api": {"api":"/api/nots/sectorwise", "method":"GET"},
     "market_summary_history_api": {"api":"/api/nots/market-summary-history", "method":"GET"},
     "disclosure":{"api":"/api/nots/news/companies/disclosure", "method":"GET"},
@@ -18,4 +18,5 @@ api_dict = {
     "trading_average_api":{"api":"/api/nots/nepse-data/trading-average","method":"GET"},
     "broker_api":{"api":"/api/nots/member","method":"POST"},
     "sector_api":{"api":"/api/nots/sector", "method":"GET"},
+    "sector_index_api":{"api":"/api/nots/index", "method":"GET"},
 }

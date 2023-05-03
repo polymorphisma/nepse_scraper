@@ -7,22 +7,16 @@ from wasmtime import Store,Module,Instance
 import json
 import os
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+WASM_FILE = r'nepse_scraper\nepse.wasm'
 
-import sys
-sys.path.append(ROOT_DIR)
-
-import paths
-from apis import api_dict
+from .apis import api_dict
 
 ROOT_URL = 'https://www.nepalstock.com.np'
-SLEEP_TIME = 3000 # -> wait time for every failed request(in milisecond)
-
 
 class TokenParser():
     def __init__(self):
         self.store = Store()
-        module = Module.from_file(self.store.engine, paths.wasm_file)
+        module = Module.from_file(self.store.engine, WASM_FILE)
         instance = Instance(self.store,module,[])
 
         self.cdx = instance.exports(self.store)["cdx"]
@@ -199,9 +193,13 @@ from retrying import retry
 import csv
 
 class Request_module:
+    
+    SLEEP_TIME = 3000 # -> wait time for every failed request(in milisecond)
+
     def __init__(self) -> None:
         self.nepse_obj = Nepse()
         self.desired_status = 200
+
 
     @retry(wait_fixed = SLEEP_TIME)
     def call_nepse_function(self, url, method,  querystring=None, payload=None):
@@ -274,20 +272,17 @@ class Request_module:
             dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
         """
         api = ROOT_URL + api_dict['head_indices_api']['api']
+        print(api)
         method = api_dict['head_indices_api']['method']
 
         querystring = {"page":"0","size":"500"}
 
         dicts = {}
 
-        with open(paths.headindices_path, 'r') as rf:
-            csv_reader = csv.reader(rf)
-
-            # skip the header row
-            next(csv_reader)
-            for row_values in csv_reader:
-                index_name = row_values[0]
-                dicts[index_name] = self.call_nepse_function(url=api + index_name, method=method, querystring=querystring)
+        sector_index = self._get_sector_index()
+        
+        for val in sector_index:
+            dicts[val['id']] = self.call_nepse_function(url=api + '/' + str(val['id']), method=method, querystring=querystring)
 
         return dicts
     
@@ -549,3 +544,15 @@ class Request_module:
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
+    def _get_sector_index(self):
+        """
+        Retrieve idnex of all sectors listed in the NEPSE.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+        """
+        api = ROOT_URL + api_dict['sector_index_api']['api']
+        method = api_dict['sector_index_api']['method']
+        querystring = {"page":"0","size":"500"}
+
+        return self.call_nepse_function(url=api, method=method, querystring=querystring)
