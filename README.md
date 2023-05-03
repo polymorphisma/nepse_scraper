@@ -40,8 +40,6 @@ pip install nepse-scraper==0.1
 ```
 git clone git@github.com:polymorphisma/nepse_scraper.git
 ```
-
-
 #### Downloading Dependencies
 ```
 pip install -r requirements.txt
