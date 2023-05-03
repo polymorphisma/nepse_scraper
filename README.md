@@ -81,7 +81,8 @@ print(today_price)
 - get_marketcap()
 - get_trading_average()
 - get_sector_detail()
-
+- get_live_stock()
+- is_market_open()
 
 ## License
 

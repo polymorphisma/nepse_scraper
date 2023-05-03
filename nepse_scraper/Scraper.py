@@ -150,7 +150,6 @@ class Nepse:
         if payload == None:
             payload = {'id': self.parser_obj.return_payload(access_token, which=which_payload)}
 
-
         # Send the request with the given parameters
         try:
             response = requests.request(
@@ -211,7 +210,7 @@ class Request_module:
 
             if response.status_code != self.desired_status:
                 raise ValueError('Unexpected status code: {}'.format(response.status_code))
-            
+            # print(response.json())
             return response.json()
         
         except Exception as exp:
@@ -235,6 +234,29 @@ class Request_module:
         date_ = response['asOf'].split('T')[0]
 
         if date_ != str(date.today()):
+            return False
+        
+        return True
+    
+    def is_market_open(self) -> bool:
+        """
+        Check if today is a trading day on the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to determine if today is a trading day or not.
+        If today is a trading day, it returns True, otherwise it returns False.
+
+        Returns:
+            bool: True if today is a trading day, False otherwise.
+        """
+
+        api = ROOT_URL + api_dict['marketopen_api']['api']
+        method = api_dict['marketopen_api']['method']
+
+        response = self.call_nepse_function(url=api, method=method)
+
+        isOpen = response['isOpen']
+
+        if isOpen != 'OPEN':
             return False
         
         return True
@@ -442,7 +464,6 @@ class Request_module:
         return self.call_nepse_function(url=api, method=method)
 
     def get_security_detail(self) -> json:
-
         """
         Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
 
@@ -557,3 +578,23 @@ class Request_module:
         querystring = {"page":"0","size":"500"}
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
+    
+    def get_live_stock(self):
+        if not(self.is_market_open()):
+            raise ValueError('Market Already closed')
+        
+        api = ROOT_URL + api_dict['stock_live_api']['api']
+        method = api_dict['stock_live_api']['method']
+
+        return self.call_nepse_function(url=api, method=method, payload='stock-live')
+    
+
+    # # incomplete pyload not working
+    # def get_nepse_live(self):
+    #     if not(self.is_market_open()):
+    #         raise ValueError('Market Already closed')
+
+    #     api = ROOT_URL + api_dict['nepse_live_api']['api']
+    #     method = api_dict['nepse_live_api']['method']
+
+    #     return self.call_nepse_function(url=api, method=method, payload='sector-live')
