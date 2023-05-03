@@ -168,9 +168,8 @@ class Nepse:
             response.raise_for_status()  # Raise an exception if the response status code is not successful
             return response
         
-        except requests.exceptions.RequestException as err:
-            print(f"Error sending request: {err}")
-            return None
+        except Exception as exp:
+            raise ValueError(f"Error sending request: {exp}")
         
 
     def get_valid_token(self):
@@ -216,7 +215,6 @@ class Request_module:
             return response.json()
         
         except Exception as exp:
-            print(exp)
             raise ValueError('Unexpected Error: {}'.format(exp))
         
     def is_trading_day(self) -> bool:
@@ -289,7 +287,6 @@ class Request_module:
             next(csv_reader)
             for row_values in csv_reader:
                 index_name = row_values[0]
-                print(index_name)
                 dicts[index_name] = self.call_nepse_function(url=api + index_name, method=method, querystring=querystring)
 
         return dicts
