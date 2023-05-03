@@ -1,3 +1,20 @@
+Metadata-Version: 2.1
+Name: nepse-scraper
+Version: 0.1
+Summary: Python Scraper for Nepse
+Home-page: https://github.com/polymorphisma/nepse_scraper/
+Download-URL: https://github.com/polymorphisma/nepse_scraper/archive/refs/tags/v_01.tar.gz
+Author: Shrawan Sunar
+Author-email: shrawansunar.6@gmail.com
+Keywords: python,nepse data,nepse scraper
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
 # _NEPSE_SCRAPER_
 
 Welcome to **nepse_scraper**, the Python module that provides easy access to the Nepal Stock Exchange (NEPSE) API. With just a few lines of code, you can retrieve today's stock prices, market summary, head indices and etc to help you make better investment decisions. The code is well-documented and organized, making it easy to understand and modify for your specific use case.
@@ -30,11 +47,6 @@ So what are you waiting for? Try out **nepse_scraper** and see how it can simpli
 
 
 ## Installation
-
-### Using Pip
-```
-pip install nepse-scraper==0.1
-```
 ### Cloning 
 
 ```
@@ -42,7 +54,7 @@ git clone git@github.com:polymorphisma/nepse_scraper.git
 ```
 
 
-#### Downloading Dependencies
+### Downloading Dependencies
 ```
 pip install -r requirements.txt
 ```
