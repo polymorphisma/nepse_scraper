@@ -7,8 +7,11 @@ from wasmtime import Store,Module,Instance
 import json
 import os
 
-WASM_FILE = r'nepse_scraper\nepse.wasm'
+import pkg_resources
+WASM_FILE = pkg_resources.resource_filename(__name__, 'nepse.wasm')
 
+
+# WASM_FILE = r'nepse.wasm'
 from .apis import api_dict
 
 ROOT_URL = 'https://www.nepalstock.com.np'
