@@ -4,8 +4,8 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
- - [Using Pip](#using-pip)
- - [Cloning](#cloning)
+   - [Using Pip](#using-pip)
+   - [Cloning](#cloning)
 
 
 ## Introduction
