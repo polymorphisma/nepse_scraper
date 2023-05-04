@@ -540,7 +540,6 @@ class Request_module:
         method = api_dict['broker_api']['method']
         querystring = {"page":"0","size":"500"}
 
-
         payload = {
             "memberName": member_name,
             "contactPerson": contact_person,
@@ -556,7 +555,6 @@ class Request_module:
     def get_sector_detail(self):
         """
         Retrieve details of all sectors listed in the NEPSE.
-
         Returns:
             json: A json response returned by NEPSE API.
         """
@@ -598,3 +596,5 @@ class Request_module:
     #     method = api_dict['nepse_live_api']['method']
 
     #     return self.call_nepse_function(url=api, method=method, payload='sector-live')
+
+
