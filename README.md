@@ -4,9 +4,9 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
-   - [Using Pip](#using-pip)
-   - [Cloning](#cloning)
-    - [Downloading Dependencies](#downloading-dependencies)
+  - [Using Pip](#using-pip)
+  - [Cloning](#cloning)
+   - [Downloading Dependencies](#downloading-dependencies)
 
 
 ## Introduction
