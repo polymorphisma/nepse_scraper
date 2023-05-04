@@ -6,6 +6,7 @@
 - [Installation](#installation)
    - [Using Pip](#using-pip)
    - [Cloning](#cloning)
+    - [Downloading Dependencies](#downloading-dependencies)
 
 
 ## Introduction
