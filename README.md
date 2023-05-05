@@ -1,4 +1,5 @@
 # NEPSE_SCRAPER
+> Python module that provides convenient access to the Nepal Stock Exchange (NEPSE) API, enabling developers and analysts to retrieve stock market data and improve investment decisions.
 
 # Table of content
 - [Introduction](#introduction)
