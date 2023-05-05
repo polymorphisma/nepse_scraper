@@ -6,7 +6,7 @@
 - [Installation](#installation)
   - [Using Pip](#using-pip)
 - [Usage](#usage)
-- [Documentation](/blob/main/nepse_scraper/doc.md)
+- [Documentation](/nepse_scraper/doc.md)
 - [License](#license)
 
 ## Introduction
