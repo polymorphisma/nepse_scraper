@@ -5,7 +5,6 @@
 - [Features](#features)
 - [Installation](#installation)
   - [Using Pip](#using-pip)
-  - [Cloning](#cloning)
 - [Usage](#usage)
 - [Documentation](#nepse_scraper/doc.md)
 - [License](#license)
@@ -46,22 +45,7 @@ So what are you waiting for? Try out **nepse_scraper** and see how it can simpli
 ```
 pip install nepse-scraper
 ```
-### Cloning 
 
-```
-git clone git@github.com:polymorphisma/nepse_scraper.git
-```
-#### Downloading Dependencies
-```
-pip install -r requirements.txt
-```
-
-_or_ 
-
-
-```
-pip install requests urllib3 wasmtime retrying
-```
 
 ## Usage
 ```py
