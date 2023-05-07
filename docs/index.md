@@ -1,7 +1,7 @@
 # Documentation
 ## API References
 - [Nepse scraper](#nepse-scraper)
-  - [get_today_price](#get-today-price)
+  - [get_today_price()](#get-today-price)
 
 ### NEPSE SCRAPER
 #### Get today price
@@ -32,3 +32,13 @@ value = request_obj.get_today_price()
 ## example: if today date is '2023-05-07' you can scrape data from '2022-05-07 to '2023-05-07'
 value = request_obj.get_today_price('2023-05-07')
 ```
+
+#### Get head indices
+    Retrieve the head indices data from the Nepal Stock Exchange (NEPSE).
+
+    This method reads the head indices file located at paths.headindices_path and queries the NEPSE API to retrieve
+    data. The data is returned as a dictionary containing index as keys and the corresponding index data as values.
+
+    Returns:
+        dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
+
