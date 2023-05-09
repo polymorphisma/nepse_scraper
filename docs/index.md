@@ -2,6 +2,7 @@
 ## API References
 - [Nepse scraper](#nepse-scraper)
   - [get_today_price()](#get-today-price)
+  - [get_head_indices()](#get-head-indices)
 
 ### NEPSE SCRAPER
 #### Get today price
