@@ -6,6 +6,11 @@
   - [get_sectorwise_summary()](#get-sectorwise-summary)
   - [get_market_summary()](#get-market-summary)
   - [get_news()](#get-news)
+  - [get_top_gainer()](#get-top-gainer)
+  - [get_top_loser()](#get-top-loser)
+  - [get_top_turnover()](#get-top-turnover)
+  - [get_top_trade()](#get-top-trade)
+  - [get_top_transaction()](#get-top-transaction)
 
 
 
@@ -149,3 +154,78 @@ from nepse_scraper import Nepse_scraper
 request_obj = Nepse_scraper()
 value = request_obj.get_top_gainer()
 ```
+
+#### Get top loser
+    Retrieve the all the loser of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the loser of ticker in terms of share price.
+        The all the loser of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_top_loser()
+```
+
+
+#### Get top turnover
+    Retrieve the all the turnover of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the turnover of ticker in terms of share price.
+        The all the turnover of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_top_turnover()
+```
+
+
+
+#### Get top trade
+    Retrieve the all the trade of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the trade of ticker in terms of share price.
+        The all the trade of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_top_trade()
+```
+
+
+
+#### Get top transaction
+    Retrieve the all the transaction of ticker in terms of share price from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve the all the transaction of ticker in terms of share price.
+        The all the transaction of ticker are returned as a json.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_top_transaction()
+```
+
+
