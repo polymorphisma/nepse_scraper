@@ -42,4 +42,13 @@ value = request_obj.get_today_price('2023-05-07')
 
     Returns:
         dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
+        
+        Example:
+        58:{data from one year prior from today date} # 58 -> this is nepse code in nepalstock.com.np
 
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_head_indices()
+```
