@@ -353,7 +353,7 @@ value = request_obj.get_broker( member_name : str= "", contact_person : str ="",
 from nepse_scraper import Nepse_scraper
 
 request_obj = Nepse_scraper()
-value = request_obj.get_sector_detail() #-> get all broker data
+value = request_obj.get_sector_detail()
 ```
 
 #### Get sector index
