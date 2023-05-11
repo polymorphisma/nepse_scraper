@@ -50,10 +50,10 @@ pip install nepse-scraper
 
 ## Usage
 ```py
-from nepse_scraper import Request_module
+from nepse_scraper import Nepse_scraper
 
 # create object from Request_module class
-request_obj = Request_module()
+request_obj = Nepse_scraper()
 
 # getting today's price from nepse
 today_price = request_obj.get_today_price()
