@@ -11,7 +11,13 @@
   - [get_top_turnover()](#get-top-turnover)
   - [get_top_trade()](#get-top-trade)
   - [get_top_transaction()](#get-top-transaction)
-
+  - [get_today_market_summary()](#get-today-market-summary)
+  - [get_security_detail()](#get-security-detail)
+  - [get_marketcap()](#get-marketcap)
+  - [get_trading_average()](#get-trading-average)
+  - [get_broker()](#get-broker)
+  - [get_sector_detail()](#get-sector-detail)
+  - [get_sector_index()](#get-sector-index)
 
 
 ### NEPSE SCRAPER
@@ -53,9 +59,9 @@ value = request_obj.get_today_price('2023-05-07')
     Returns:
         dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
         
-        Example:
-        58:{data from one year prior from today date} # 58 -> this is nepse code in nepalstock.com.np
-
+        #Example:
+        #58:{data from one year prior from today date} # 58 -> this is nepse code in nepalstock.com.np
+        #try request_obj._get_sector_index() for more detail about indices and it's index
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -229,3 +235,137 @@ value = request_obj.get_top_transaction()
 ```
 
 
+#### Get today market summary
+    Retrieve today's market summary from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve today's market summary, which includes information
+        such as the current NEPSE index value, trading volume, and the number of transactions.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_today_market_summary()
+```
+
+#### Get security detail
+    Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve security detail information, which includes the
+        names and codes of all listed securities on the NEPSE, along with their market prices and other
+        relevant data.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_security_detail()
+```
+
+#### Get marketcap
+    Retrieve market capitalization data from the Nepal Stock Exchange (NEPSE).
+
+        This method queries the NEPSE API to retrieve market capitalization data for all listed securities
+        on the NEPSE.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_marketcap()
+```
+
+
+#### Get trading average
+    Retrieve the trading average for the specified number of days ending on the given date (or today if date is not
+        specified).
+
+        Args:
+            date_: A string representing the date (in YYYY-MM-DD format) for which to retrieve the trading average. If
+                not specified, the method will retrieve the trading average for latest trading date.
+                # Note: nepse only gives access data from today date and one year prior
+                # example: if today date is '2023-05-07' you can get data from '2022-05-07 to '2023-05-07'
+            n_days: An integer representing the number of days to include in the trading average calculation. The default
+                value is 120.
+                # value should be between 1 to 180
+        Returns:
+            json: A json response returned by NEPSE API.
+        Raises:
+            ValueError: If n_days is less than or equal to zero.
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_trading_average()
+
+# or
+
+value = request_obj.get_trading_average(date_ = '2023-05-01', n_days = 180)
+```
+
+
+#### Get broker
+    Get broker information from NEPSE.
+
+        Args:
+            member_name (str, optional): The name of the broker member. Defaults to "".
+            contact_person (str, optional): The contact person name of the broker. Defaults to "".
+            contact_number (str, optional): The contact number of the broker. Defaults to "".
+            member_code (str, optional): The code of the broker member. Defaults to "".
+            province_id (int, optional): The ID of the province where the broker is located. Defaults to 0.
+            district_id (int, optional): The ID of the district where the broker is located. Defaults to 0.
+            municipality_id (int, optional): The ID of the municipality where the broker is located. Defaults to 0.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_broker() #-> get all broker data
+
+# or
+
+value = request_obj.get_broker( member_name : str= "", contact_person : str ="", contact_number : str = "", member_code : str ="", province_id : int = 0, district_id : int = 0, municipality_id : int= 0)
+```
+
+#### Get sector detail
+    Retrieve details of all sectors listed in the NEPSE.
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj.get_sector_detail() #-> get all broker data
+```
+
+#### Get sector index
+    Retrieve index of all sectors listed in the NEPSE.
+
+        Returns:
+            json: A json response returned by NEPSE API.
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+value = request_obj._get_sector_index()
+```

@@ -566,7 +566,7 @@ class Request_module:
     
     def _get_sector_index(self):
         """
-        Retrieve idnex of all sectors listed in the NEPSE.
+        Retrieve index of all sectors listed in the NEPSE.
 
         Returns:
             json: A json response returned by NEPSE API.
