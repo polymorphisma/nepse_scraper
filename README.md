@@ -1,6 +1,8 @@
 # Nepse scraper
 > Python module that provides convenient access to the Nepal Stock Exchange (NEPSE) API, enabling developers and analysts to retrieve stock market data and improve investment decisions.
 
+> If you're looking for more detailed documentation on how to use my project called "nepse_scraper," I would recommend checking out the project's GitHub page at [https://github.com/polymorphisma/nepse_scraper/].
+
 # Table of content
 - [Introduction](#introduction)
 - [Features](#features)
