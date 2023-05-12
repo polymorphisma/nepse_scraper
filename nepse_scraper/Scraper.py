@@ -193,7 +193,7 @@ class Nepse:
 
 from retrying import retry
 
-class Request_module:
+class Nepse_scraper:
     
     SLEEP_TIME = 3000 # -> wait time for every failed request(in milisecond)
 
@@ -210,7 +210,6 @@ class Request_module:
 
             if response.status_code != self.desired_status:
                 raise ValueError('Unexpected status code: {}'.format(response.status_code))
-            # print(response.json())
             return response.json()
         
         except Exception as exp:
@@ -296,7 +295,6 @@ class Request_module:
             dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
         """
         api = ROOT_URL + api_dict['head_indices_api']['api']
-        print(api)
         method = api_dict['head_indices_api']['method']
 
         querystring = {"page":"0","size":"500"}

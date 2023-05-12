@@ -1,1 +1,1 @@
-from nepse_scraper.Scraper import Request_module
+from nepse_scraper.Scraper import Nepse_scraper
