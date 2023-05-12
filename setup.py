@@ -3,7 +3,7 @@ from os import path
 
 current_dir = path.abspath(path.dirname(__file__))
 
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 DESCRIPTION = 'Python Scraper for Nepse'
 
 with open(path.join(current_dir, 'README.md'), encoding='utf-8') as f:
@@ -22,8 +22,8 @@ setup(
     packages=find_packages(),
     url='https://github.com/polymorphisma/nepse_scraper/',  
     install_requires=['requests','urllib3','wasmtime', 'retrying'],
-    keywords=['python', 'nepse data', 'nepse scraper'],
-    download_url="https://github.com/polymorphisma/nepse_scraper/archive/refs/tags/v_01.6.tar.gz",
+    keywords=['python', 'nepse data', 'nepse scraper','nepse', 'scraping'],
+    download_url="https://github.com/polymorphisma/nepse_scraper/archive/refs/tags/v_01.7.tar.gz",
     classifiers=[
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Developers',
