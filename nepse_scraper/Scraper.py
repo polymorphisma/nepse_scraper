@@ -633,6 +633,53 @@ class Nepse_scraper:
         
         return return_value
     
+    def get_ticker_contact_info(self, ticker = None) -> dict:
+
+        """
+        Retrieve all the contact information of ticker from Nepse. 
+        i.e:
+            Phone Number
+            Email
+            Contact Person
+            Location etc
+
+        args:
+            ticker (str or list): if list provided returns information of all the provided ticker or list
+                                  if str provided then returns provided tickers information
+
+        Returns:
+            dict: dictionary contiang provided ticker as key and values as retrived value form nepse
+
+        Raise:
+            ValueError: If provided ticker is not found in nepse
+        
+        """
+
+        if not(ticker):
+            raise ValueError('Ticker is required')
+        
+        if isinstance(ticker, str):
+            ticker = [ticker]
+
+        ticker = [x.upper() for x in ticker]
+
+        values = self._return_ticker_id(ticker)
+
+        return_value = dict()
+
+        for key,value in values.items():
+
+            api = ROOT_URL + api_dict['ticker_contact_api']['api'] + '/' + str(value)
+            method = api_dict['ticker_contact_api']['method']
+
+
+            return_value[key] = self.call_nepse_function(url=api, method=method, which_payload='stock-live')
+        
+        if len(ticker) == 1:
+            return return_value[ticker[0]]
+        
+        return return_value
+    
     # incomplete pyload not working
     # testing requrired
     def get_nepse_live(self):

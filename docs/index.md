@@ -19,6 +19,7 @@
   - [get_sector_detail()](#get-sector-detail)
   - [get_sector_index()](#get-sector-index)
   - [get_ticker_info()](#get-ticker-info)
+  - [get_ticker_contact_info()](#get-ticker-contact-info)
 
 
 ### NEPSE SCRAPER
@@ -394,4 +395,33 @@ request_obj = Nepse_scraper()
 value = request_obj.get_ticker_info('NABIL')
 # or
 value = request_obj.get_ticker_info(['NABIL', 'NICA'])
+```
+#### Get ticker contact info
+
+    Retrieve all the contact information of ticker from Nepse. 
+    i.e:
+        Phone Number
+        Email
+        Contact Person
+        Location etc
+
+    args:
+        ticker (str or list): if list provided returns information of all the provided ticker or list
+                                if str provided then returns provided tickers information
+
+    Returns:
+        dict: dictionary contiang provided ticker as key and values as retrived value form nepse
+
+    Raise:
+        ValueError: If provided ticker is not found in nepse
+
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+
+value = request_obj.get_ticker_contact_info('NABIL')
+# or
+value = request_obj.get_ticker_contact_info(['NABIL', 'NICA'])
 ```
