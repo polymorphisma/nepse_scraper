@@ -680,20 +680,20 @@ class Nepse_scraper:
         
         return return_value
     
-    # incomplete pyload not working
-    # testing requrired
-    def get_nepse_live(self):
-        if not(self.is_market_open()):
-            raise ValueError('Market is closed')
-
-        api = ROOT_URL + api_dict['nepse_live_api']['api']
-        method = api_dict['nepse_live_api']['method']
+    def get_live_indices(self, indices_id: int = 58):
+        
+        api = ROOT_URL + api_dict['indices_live_api']['api'] + "/" + str(indices_id)
+        method = api_dict['indices_live_api']['method']
 
         return self.call_nepse_function(url=api, method=method, which_payload='sector-live')
     
+    
+    # incomplete pyload not working
+    # testing requrired
+
     def get_live_stock(self):
-        if not(self.is_market_open()):
-            raise ValueError('Market is closed')
+        # if not(self.is_market_open()):
+        #     raise ValueError('Market is closed')
         
         api = ROOT_URL + api_dict['stock_live_api']['api']
         method = api_dict['stock_live_api']['method']
