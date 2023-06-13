@@ -318,8 +318,7 @@ class Nepse_scraper:
         """
         Retrieve the head indices data from the Nepal Stock Exchange (NEPSE).
 
-        This method reads the head indices file located at paths.headindices_path and queries the NEPSE API to retrieve
-        data. The data is returned as a dictionary containing index as keys and the corresponding index data as values.
+        This method queries the NEPSE API to retrieve data. The data is returned as a dictionary containing index as keys and the corresponding index data as values.
 
         Returns:
             dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
