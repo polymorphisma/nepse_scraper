@@ -18,7 +18,7 @@
   - [get_broker()](#get-broker)
   - [get_sector_detail()](#get-sector-detail)
   - [get_sector_index()](#get-sector-index)
-  - [get_ticker_info()](#get-ticker_info)
+  - [get_ticker_info()](#get-ticker-info)
 
 
 ### NEPSE SCRAPER
