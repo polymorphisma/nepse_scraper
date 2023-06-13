@@ -673,7 +673,7 @@ class Nepse_scraper:
             method = api_dict['ticker_contact_api']['method']
 
 
-            return_value[key] = self.call_nepse_function(url=api, method=method, which_payload='stock-live')
+            return_value[key] = self.call_nepse_function(url=api, method=method)
         
         if len(ticker) == 1:
             return return_value[ticker[0]]
