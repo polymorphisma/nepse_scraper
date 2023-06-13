@@ -1,5 +1,7 @@
 # Documentation
+
 ## API References
+
 - [Nepse scraper](#nepse-scraper)
   - [get_today_price()](#get-today-price)
   - [get_head_indices()](#get-head-indices)
@@ -20,10 +22,12 @@
   - [get_sector_index()](#get-sector-index)
   - [get_ticker_info()](#get-ticker-info)
   - [get_ticker_contact_info()](#get-ticker-contact-info)
-
+  - [get_live_indices()](#get-live-indices)
 
 ### NEPSE SCRAPER
+
 #### Get today price
+
     Get today's trading data for from Nepal Stock Exchange (NEPSE).
 
     This method queries the NEPSE API to retrieve the trading data for the current date or a specified date.
@@ -38,6 +42,7 @@
 
     Raises:
         ValueError: If the date string is not in the "YYYY-MM-DD" format.
+
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -53,6 +58,7 @@ value = request_obj.get_today_price('2023-05-07')
 ```
 
 #### Get head indices
+
     Retrieve the head indices data from the Nepal Stock Exchange (NEPSE).
 
     This method reads the head indices file located at paths.headindices_path and queries the NEPSE API to retrieve
@@ -60,10 +66,11 @@ value = request_obj.get_today_price('2023-05-07')
 
     Returns:
         dict: A dictionary containing the latest data for each head index, with index as keys and response as a value.
-        
+
         #Example:
         #58:{data from one year prior from today date} # 58 -> this is nepse code in nepalstock.com.np
         #try request_obj._get_sector_index() for more detail about indices and it's index
+
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -71,8 +78,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_head_indices()
 ```
 
-
 #### Get sectorwise summary
+
     Retrieve the sector-wise summary from a given business date from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve the sector-wise summary for a given business date.
@@ -99,8 +106,8 @@ value = request_obj.get_sectorwise_summary()
 value = request_obj.get_sectorwise_summary('2023-05-07')
 ```
 
-
 #### Get Market summary
+
     Retrieve the market summary from a given business date from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve the market summary for a given business date.
@@ -127,8 +134,8 @@ value = request_obj.get_market_summary()
 value = request_obj.get_market_summary('2023-05-07')
 ```
 
-
 #### Get news
+
     Retrieve the latest news and announcements from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve the latest news and announcements regarding listed companies.
@@ -136,7 +143,6 @@ value = request_obj.get_market_summary('2023-05-07')
 
         Returns:
             json: A json response returned by NEPSE API.
-
 
 ```py
 from nepse_scraper import Nepse_scraper
@@ -146,6 +152,7 @@ value = request_obj.get_news()
 ```
 
 #### Get top gainer
+
     Retrieve the all the gains of ticker in terms of share price from the Nepal Stock Exchange (NEPSE) for last trading day.
 
         This method queries the NEPSE API to retrieve the all the gains of ticker in terms of share price.
@@ -153,8 +160,6 @@ value = request_obj.get_news()
 
         Returns:
             json: A json response returned by NEPSE API.
-
-
 
 ```py
 from nepse_scraper import Nepse_scraper
@@ -164,6 +169,7 @@ value = request_obj.get_top_gainer()
 ```
 
 #### Get top loser
+
     Retrieve the all the loser of ticker in terms of share price from the Nepal Stock Exchange (NEPSE) for last trading day.
 
         This method queries the NEPSE API to retrieve the all the loser of ticker in terms of share price.
@@ -172,7 +178,6 @@ value = request_obj.get_top_gainer()
         Returns:
             json: A json response returned by NEPSE API.
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -180,8 +185,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_top_loser()
 ```
 
-
 #### Get top turnover
+
     Retrieve the all the turnover of ticker in terms of share price from the Nepal Stock Exchange (NEPSE) for last trading day.
 
         This method queries the NEPSE API to retrieve the all the turnover of ticker in terms of share price.
@@ -190,7 +195,6 @@ value = request_obj.get_top_loser()
         Returns:
             json: A json response returned by NEPSE API.
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -198,9 +202,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_top_turnover()
 ```
 
-
-
 #### Get top trade
+
     Retrieve the all the trade of ticker in terms of share price from the Nepal Stock Exchange (NEPSE) for last trading day.
 
         This method queries the NEPSE API to retrieve the all the trade of ticker in terms of share price.
@@ -209,7 +212,6 @@ value = request_obj.get_top_turnover()
         Returns:
             json: A json response returned by NEPSE API.
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -217,9 +219,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_top_trade()
 ```
 
-
-
 #### Get top transaction
+
     Retrieve the all the transaction of ticker in terms of share price from the Nepal Stock Exchange (NEPSE) for last trading day.
 
         This method queries the NEPSE API to retrieve the all the transaction of ticker in terms of share price.
@@ -228,7 +229,6 @@ value = request_obj.get_top_trade()
         Returns:
             json: A json response returned by NEPSE API.
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -236,8 +236,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_top_transaction()
 ```
 
-
 #### Get today market summary
+
     Retrieve today's market summary from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve today's market summary, which includes information
@@ -254,6 +254,7 @@ value = request_obj.get_today_market_summary()
 ```
 
 #### Get all security
+
     Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve security detail information, which includes the
@@ -271,6 +272,7 @@ value = request_obj.get_all_security()
 ```
 
 #### Get marketcap
+
     Retrieve market capitalization data from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve market capitalization data for all listed securities
@@ -279,7 +281,6 @@ value = request_obj.get_all_security()
         Returns:
             json: A json response returned by NEPSE API.
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -287,8 +288,8 @@ request_obj = Nepse_scraper()
 value = request_obj.get_marketcap()
 ```
 
-
 #### Get trading average
+
     Retrieve the trading average for the specified number of days ending on the given date (or today if date is not
         specified).
 
@@ -316,8 +317,8 @@ value = request_obj.get_trading_average()
 value = request_obj.get_trading_average(date_ = '2023-05-01', n_days = 180)
 ```
 
-
 #### Get broker
+
     Get broker information from NEPSE.
 
         Args:
@@ -332,8 +333,6 @@ value = request_obj.get_trading_average(date_ = '2023-05-01', n_days = 180)
         Returns:
             json: A json response returned by NEPSE API.
 
-
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -346,10 +345,10 @@ value = request_obj.get_broker( member_name : str= "", contact_person : str ="",
 ```
 
 #### Get sector detail
+
     Retrieve details of all sectors listed in the NEPSE.
         Returns:
             json: A json response returned by NEPSE API.
-
 
 ```py
 from nepse_scraper import Nepse_scraper
@@ -359,11 +358,11 @@ value = request_obj.get_sector_detail()
 ```
 
 #### Get sector index
+
     Retrieve index of all sectors listed in the NEPSE.
 
         Returns:
             json: A json response returned by NEPSE API.
-
 
 ```py
 from nepse_scraper import Nepse_scraper
@@ -385,7 +384,6 @@ value = request_obj._get_sector_index()
 
     Raise:
         ValueError: If provided ticker is not found in nepse
-    
 
 ```py
 from nepse_scraper import Nepse_scraper
@@ -396,9 +394,10 @@ value = request_obj.get_ticker_info('NABIL')
 # or
 value = request_obj.get_ticker_info(['NABIL', 'NICA'])
 ```
+
 #### Get ticker contact info
 
-    Retrieve all the contact information of ticker from Nepse. 
+    Retrieve all the contact information of ticker from Nepse.
     i.e:
         Phone Number
         Email
@@ -415,7 +414,6 @@ value = request_obj.get_ticker_info(['NABIL', 'NICA'])
     Raise:
         ValueError: If provided ticker is not found in nepse
 
-
 ```py
 from nepse_scraper import Nepse_scraper
 
@@ -424,4 +422,48 @@ request_obj = Nepse_scraper()
 value = request_obj.get_ticker_contact_info('NABIL')
 # or
 value = request_obj.get_ticker_contact_info(['NABIL', 'NICA'])
+```
+
+#### Get live indices
+
+    Retrive the live indices data of provided indices if market is close then retrives the last trading date's index
+
+    Note: Refer to following id while using this function you can only pass following values
+
+        Banking SubIndex -> 51
+        Hotels And Tourism Index -> 52
+        Others Index -> 53
+        HydroPower Index -> 54
+        Development Bank Index -> 55
+        Manufacturing And Processing -> 56
+        Sensitive Index -> 57
+        NEPSE Index -> 58
+        Non Life Insurance -> 59
+        Finance Index -> 60
+        Trading Index -> 61
+        Float Index -> 62
+        Sensitive Float Index -> 63
+        Microfinance Index -> 64
+        Life Insurance -> 65
+        Mutual Fund -> 66
+        Investment Index -> 67
+
+    Args:
+        indices_id (int, default-> 58)
+
+    Returns:
+        list : containg time and index inside list
+
+    Raise:
+        ValueError: If proivded indices is not valid
+
+```py
+from nepse_scraper import Nepse_scraper
+
+nepse_obj = Nepse_scraper()
+
+value = nepse_obj.get_live_indices(51)
+
+print(value)
+
 ```

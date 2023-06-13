@@ -4,3 +4,4 @@ dist/
 nepse_scraper.egg-info/
 sample.py
 sample.ipynb
+.vscode
