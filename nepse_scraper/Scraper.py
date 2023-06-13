@@ -215,6 +215,12 @@ class Nepse_scraper:
         except Exception as exp:
             raise ValueError('Unexpected Error: {}'.format(exp))
         
+    def _get_security(self):
+        api = ROOT_URL + api_dict['security']['api']
+        method = api_dict['security']['method']
+
+        return self.call_nepse_function(url=api, method=method)
+        
     def is_trading_day(self) -> bool:
         """
         Check if today is a trading day on the Nepal Stock Exchange (NEPSE).
@@ -461,7 +467,7 @@ class Nepse_scraper:
 
         return self.call_nepse_function(url=api, method=method)
 
-    def get_security_detail(self) -> json:
+    def get_all_security(self) -> json:
         """
         Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
 
@@ -562,7 +568,7 @@ class Nepse_scraper:
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
-    def _get_sector_index(self):
+    def _get_sector_index(self) -> json:
         """
         Retrieve index of all sectors listed in the NEPSE.
 
@@ -575,24 +581,76 @@ class Nepse_scraper:
 
         return self.call_nepse_function(url=api, method=method, querystring=querystring)
     
+    def _return_ticker_id(self, ticker_list: list) -> dict:
+
+        all_security = self._get_security()
+        values = {d.get('symbol'):d.get('id') for d in all_security if d.get('symbol') in ticker_list}
+
+        if len(ticker_list) != len(values.keys()):
+            raise ValueError(f"{set(ticker_list).difference(values.keys())}: Not Found")
+
+        return values
+        
+    def get_ticker_info(self, ticker = None) -> dict:
+
+        """
+        Retrieve all the information of ticker from Nepse
+
+        args:
+            ticker (str or list): if list provided returns information of all the provided ticker or list
+                                  if str provided then returns provided tickers information
+
+        Returns:
+            dict: dictionary contiang provided ticker as key and values as retrived value form nepse
+
+        Raise:
+            ValueError: If provided ticker is not found in nepse
+        
+        """
+
+        if not(ticker):
+            raise ValueError('Ticker is required')
+        
+        if isinstance(ticker, str):
+            ticker = [ticker]
+
+        ticker = [x.upper() for x in ticker]
+
+        values = self._return_ticker_id(ticker)
+
+        return_value = dict()
+
+        for key,value in values.items():
+
+            api = ROOT_URL + api_dict['ticker_info_api']['api'] + '/' + str(value)
+            method = api_dict['ticker_info_api']['method']
+
+
+            return_value[key] = self.call_nepse_function(url=api, method=method, which_payload='stock-live')
+        
+        if len(ticker) == 1:
+            return return_value[ticker[0]]
+        
+        return return_value
+    
+    # incomplete pyload not working
+    # testing requrired
+    def get_nepse_live(self):
+        if not(self.is_market_open()):
+            raise ValueError('Market is closed')
+
+        api = ROOT_URL + api_dict['nepse_live_api']['api']
+        method = api_dict['nepse_live_api']['method']
+
+        return self.call_nepse_function(url=api, method=method, which_payload='sector-live')
+    
     def get_live_stock(self):
         if not(self.is_market_open()):
-            raise ValueError('Market Already closed')
+            raise ValueError('Market is closed')
         
         api = ROOT_URL + api_dict['stock_live_api']['api']
         method = api_dict['stock_live_api']['method']
 
-        return self.call_nepse_function(url=api, method=method, payload='stock-live')
-    
-
-    # # incomplete pyload not working
-    # def get_nepse_live(self):
-    #     if not(self.is_market_open()):
-    #         raise ValueError('Market Already closed')
-
-    #     api = ROOT_URL + api_dict['nepse_live_api']['api']
-    #     method = api_dict['nepse_live_api']['method']
-
-    #     return self.call_nepse_function(url=api, method=method, payload='sector-live')
+        return self.call_nepse_function(url=api, method=method, which_payload='stock-live')
 
 

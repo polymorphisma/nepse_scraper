@@ -12,12 +12,13 @@
   - [get_top_trade()](#get-top-trade)
   - [get_top_transaction()](#get-top-transaction)
   - [get_today_market_summary()](#get-today-market-summary)
-  - [get_security_detail()](#get-security-detail)
+  - [get_all_security()](#get-all-security)
   - [get_marketcap()](#get-marketcap)
   - [get_trading_average()](#get-trading-average)
   - [get_broker()](#get-broker)
   - [get_sector_detail()](#get-sector-detail)
   - [get_sector_index()](#get-sector-index)
+  - [get_ticker_info()](#get-ticker_info)
 
 
 ### NEPSE SCRAPER
@@ -251,7 +252,7 @@ request_obj = Nepse_scraper()
 value = request_obj.get_today_market_summary()
 ```
 
-#### Get security detail
+#### Get all security
     Retrieve security detail information from the Nepal Stock Exchange (NEPSE).
 
         This method queries the NEPSE API to retrieve security detail information, which includes the
@@ -265,7 +266,7 @@ value = request_obj.get_today_market_summary()
 from nepse_scraper import Nepse_scraper
 
 request_obj = Nepse_scraper()
-value = request_obj.get_security_detail()
+value = request_obj.get_all_security()
 ```
 
 #### Get marketcap
@@ -368,4 +369,29 @@ from nepse_scraper import Nepse_scraper
 
 request_obj = Nepse_scraper()
 value = request_obj._get_sector_index()
+```
+
+#### Get ticker info
+
+    Retrieve all the information of ticker from Nepse
+
+    args:
+        ticker (str or list): if list provided returns information of all the provided ticker or list
+                                if str provided then returns provided tickers information
+
+    Returns:
+        dict: dictionary contiang provided ticker as key and values as retrived value form nepse
+
+    Raise:
+        ValueError: If provided ticker is not found in nepse
+    
+
+```py
+from nepse_scraper import Nepse_scraper
+
+request_obj = Nepse_scraper()
+
+value = request_obj.get_ticker_info('NABIL')
+# or
+value = request_obj.get_ticker_info(['NABIL', 'NICA'])
 ```

@@ -21,4 +21,7 @@ api_dict = {
     "sector_index_api":{"api":"/api/nots/index", "method":"GET"},
     "stock_live_api":{"api":"/api/nots/lives-market", "method":"GET"},
     "nepse_live_api":{"api":"/api/nots/graph/index/58", "method":"POST"},
+    "security":{"api":"/api/nots/security", "method":"GET"},
+    "ticker_info_api":{"api":"/api/nots/security", "method":"POST"},
+    "ticker_contact_api":{"api":"/api/nots/security/profile", "method":"GET"},
 }
