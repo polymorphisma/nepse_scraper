@@ -203,10 +203,10 @@ class Nepse_scraper:
 
 
     @retry(wait_fixed = SLEEP_TIME)
-    def call_nepse_function(self, url, method,  querystring=None, payload=None):
+    def call_nepse_function(self, url, method,  querystring=None, payload=None, which_payload=None):
         try:
             access_token = self.nepse_obj.get_valid_token()
-            response = self.nepse_obj.return_data(url, access_token=access_token, method=method, querystring=querystring, payload=payload)
+            response = self.nepse_obj.return_data(url, access_token=access_token, method=method, querystring=querystring, payload=payload, which_payload=which_payload)
 
             if response.status_code != self.desired_status:
                 raise ValueError('Unexpected status code: {}'.format(response.status_code))
