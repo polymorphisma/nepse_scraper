@@ -41,7 +41,6 @@ class TokenParser():
                      token_response['salt4'], token_response['salt3'], token_response['salt5'])
         q = self.mdx(self.store, token_response['salt1'], token_response['salt2'],
                      token_response['salt4'], token_response['salt3'], token_response['salt5'])
-
         i = self.cdx(self.store, token_response['salt2'], token_response['salt1'],
                      token_response['salt3'], token_response['salt5'], token_response['salt4'])
         r = self.rdx(self.store, token_response['salt2'], token_response['salt1'],
