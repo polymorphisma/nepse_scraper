@@ -12,7 +12,6 @@ import os
 import pkg_resources
 WASM_FILE = pkg_resources.resource_filename(__name__, 'nepse.wasm')
 
-
 # WASM_FILE = r'nepse.wasm'
 
 ROOT_URL = 'https://www.nepalstock.com.np'
@@ -61,7 +60,6 @@ class TokenParser():
                                                                                          1:s] + refresh_token[s+1:t] + refresh_token[t+1:u] + refresh_token[u+1:]
 
         return (parsed_access_token, parsed_refresh_token)
-
 
 class PayloadParser():
     def __init__(self):
@@ -115,7 +113,6 @@ class PayloadParser():
             f"salt{index_value+1}") * today - access_token_value[1].get(f"salt{index_value}")
 
         return payload_id
-
 
 class Nepse:
     """
@@ -213,7 +210,6 @@ class Nepse:
 
     def return_data(self, url, access_token, method='GET', which_payload=None,  querystring=None, payload=None):
         return self.request_api(method=method, url=url, access_token=access_token, which_payload=which_payload, querystring=querystring, payload=payload)
-
 
 class Nepse_scraper:
 
@@ -744,6 +740,34 @@ class Nepse_scraper:
         method = api_dict['indices_live_api']['method']
 
         return self.call_nepse_function(url=api, method=method, which_payload='sector-live')
+    
+
+    def get_ticker_price(self, ticker = None):
+        if not (ticker):
+            raise ValueError('Ticker is required')
+
+        if isinstance(ticker, str):
+            ticker = [ticker]
+
+        ticker = [x.upper() for x in ticker]
+
+        values = self._return_ticker_id(ticker)
+
+        return_value = dict()
+
+        for key, value in values.items():
+
+            api = ROOT_URL + \
+                api_dict['ticker_price_api']['api'] + '/' + str(value)
+            method = api_dict['ticker_price_api']['method']
+
+            return_value[key] = self.call_nepse_function(
+                url=api, method=method)
+
+        if len(ticker) == 1:
+            return return_value[ticker[0]]
+
+        return return_value
 
     # incomplete pyload not working
     # testing requrired

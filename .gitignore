@@ -3,5 +3,5 @@ __pycache__/
 dist/
 nepse_scraper.egg-info/
 sample.py
-sample.ipynb
+*.ipynb
 .vscode
