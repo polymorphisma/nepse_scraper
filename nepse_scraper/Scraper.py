@@ -14,7 +14,7 @@ WASM_FILE = pkg_resources.resource_filename(__name__, 'nepse.wasm')
 
 # WASM_FILE = r'nepse.wasm'
 
-ROOT_URL = 'https://www.nepalstock.com.np'
+ROOT_URL = 'https://www.nepalstock.com'
 
 
 class TokenParser():
@@ -69,10 +69,10 @@ class PayloadParser():
         self.method = api_dict["marketopen_api"]['method']
         self.payload = {}
         self.headers = {
-            "authority": "www.nepalstock.com.np",
+            "authority": "www.nepalstock.com",
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.5",
-            "referer": "https://www.nepalstock.com.np",
+            "referer": "https://www.nepalstock.com",
             "sec-ch-ua": '"Not_A Brand";v="99", "Brave";v="109", "Chromium";v="109"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -132,13 +132,13 @@ class Nepse:
         self.token_method = api_dict['authenticate_api']['method']
 
         self.headers = {
-            'Host': 'www.nepalstock.com.np',
+            'Host': 'www.nepalstock.com',
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
-            'Referer': 'https://www.nepalstock.com.np/',
+            'Referer': 'https://www.nepalstock.com/',
             'Pragma': 'no-cache',
             'Cache-Control': 'no-cache',
             'TE': 'Trailers',
