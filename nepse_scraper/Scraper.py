@@ -780,3 +780,10 @@ class Nepse_scraper:
         method = api_dict['stock_live_api']['method']
 
         return self.call_nepse_function(url=api, method=method, which_payload='stock-live')
+
+
+    def get_specific_stock_price(self, stock_symbol):
+        value = self.get_today_price()
+        for val in value['content']:
+            if val['symbol'].lower() == stock_symbol.lower():
+                return val
