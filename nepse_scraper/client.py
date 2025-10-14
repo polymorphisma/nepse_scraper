@@ -78,16 +78,16 @@ class NepseScraper:
         endpoint = api_dict['today_price_api']
         params = {"page": "0", "size": "500", "businessDate": business_date}
         response = self.session.post(endpoint['api'], params=params)
-
         return response.json().get('content', [])
 
-    def get_top_stocks(self, category: str) -> List[Dict[str, Any]]:
+    def get_top_stocks(self, category: str, show_all: bool = False) -> List[Dict[str, Any]]:
         """
         Fetches top stocks based on a category (e.g., gainers, losers, turnover).
 
         Args:
             category (str): The category of top stocks to fetch. Valid options are:
                             'top_gainer', 'top_loser', 'top_turnover', 'top_trade', 'top_transaction'.
+            show_all (bool): If True, fetches all stocks in the category, not just the top ten. Defaults to False.
 
         Returns:
             List[Dict[str, Any]]: A list of dictionaries representing the top stocks.
@@ -95,13 +95,14 @@ class NepseScraper:
         Raises:
             ValueError: If an invalid category is provided.
         """
-        logger.info(f"Fetching top stocks for category: {category}")
+        logger.info(f"Fetching top stocks for category: {category}, show_all: {show_all}")
         valid_categories = ('top_gainer', 'top_loser', 'top_turnover', 'top_trade', 'top_transaction')
         if category not in valid_categories:
             raise ValueError(f"Invalid category: {category}. Must be one of {valid_categories}")
         
         endpoint = api_dict[category]
-        response = self.session.get(endpoint['api'])
+        params = {'all': str(show_all).lower()}
+        response = self.session.get(endpoint['api'], params=params)
         return response.json()
 
     def get_ticker_info(self, ticker: Union[str, List[str]]) -> Union[Dict[str, Any], Dict[str, Dict[str, Any]]]:
@@ -244,16 +245,43 @@ class NepseScraper:
         response = self.session.get(endpoint['api'])
         return response.json()
 
-    def get_brokers(self) -> List[Dict[str, Any]]:
+    def get_brokers(self, member_name: str = "", contact_person: str = "", contact_number: str = "", member_code: str = "", province_id: int = 0, district_id: int = 0, municipality_id: int = 0) -> List[Dict[str, Any]]:
         """
-        Fetches a list of all registered brokers from NEPSE.
+        Fetches a list of all registered brokers from NEPSE with optional filters.
+
+        Args:
+            member_name (str, optional): The name of the broker member. Defaults to "".
+            contact_person (str, optional): The contact person name of the broker. Defaults to "".
+            contact_number (str, optional): The contact number of the broker. Defaults to "".
+            member_code (str, optional): The code of the broker member. Defaults to "".
+            province_id (int, optional): The ID of the province where the broker is located. Defaults to 0.
+            district_id (int, optional): The ID of the district where the broker is located. Defaults to 0.
+            municipality_id (int, optional): The ID of the municipality where the broker is located. Defaults to 0.
 
         Returns:
             List[Dict[str, Any]]: A list of dictionaries containing broker information.
         """
-        logger.info("Fetching list of brokers.")
+        logger.info(f"Fetching list of brokers with filters: member_name={member_name}, contact_person={contact_person}, contact_number={contact_number}, member_code={member_code}, province_id={province_id}, district_id={district_id}, municipality_id={municipality_id}")
+        
         endpoint = api_dict['broker_api']
-        response = self.session.post(endpoint['api'])
+        
+        # Construct parameters with the filters
+        params = {
+            "memberName": member_name,
+            "contactPerson": contact_person,
+            "contactNumber": contact_number,
+            "memberCode": member_code,
+            "provinceId": province_id,
+            "districtId": district_id,
+            "municipalityId": municipality_id,
+            "page": "0",  # Default pagination
+            "size": "500"  # Default pagination
+        }
+        
+        # Send a GET request to the API endpoint with the parameters
+        response = self.session.get(endpoint['api'], params=params)
+        
+        # Return the JSON response
         return response.json()
 
     def get_sectors(self) -> List[Dict[str, Any]]:
@@ -355,12 +383,149 @@ class NepseScraper:
         ticker_id = self._resolve_ticker_ids([ticker_upper])[ticker_upper]
         endpoint = api_dict['ticker_price_api']
         
+        path = f"{endpoint['api']}/{ticker_id}"
+        
         params = {
-            'securityId': ticker_id,
             'startDate': start_date,
             'endDate': end_date,
             'page': page,
             'size': size
         }
+        response = self.session.get(path, params=params)
+        return response.json()
+
+    # =========================================================================
+    # NEW METHODS ADDED
+    # =========================================================================
+
+    def get_nepse_index(self) -> List[Dict[str, Any]]:
+        """
+        Retrieves the NEPSE index and sub-indices data.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, each representing an index.
+        """
+        logger.info("Fetching NEPSE index data.")
+        endpoint = api_dict['nepse_index_api']
+        response = self.session.get(endpoint['api'])
+        return response.json()
+
+    def get_security_daily_trade_stat(self, ticker: str) -> Dict[str, Any]:
+        """
+        Retrieves daily trade statistics for a specific security.
+
+        Args:
+            ticker (str): The ticker symbol of the security.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the daily trade statistics.
+        """
+        ticker_upper = ticker.upper()
+        logger.info(f"Fetching daily trade statistics for ticker: {ticker_upper}")
+        ticker_id = self._resolve_ticker_ids([ticker_upper])[ticker_upper]
+        endpoint = api_dict['security_daily_trade_stat_api']
+        path = f"{endpoint['api']}/{ticker_id}"
+        response = self.session.get(path)
+        return response.json()
+
+    def get_securities_list(self) -> List[Dict[str, Any]]:
+        """
+        Retrieves a simplified list of all securities.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, each representing a security.
+        """
+        logger.info("Fetching the simplified list of securities.")
+        endpoint = api_dict['securities_list_api']
+        response = self.session.get(endpoint['api'])
+        return response.json()
+
+    def get_supply_demand(self, show_all: bool = False) -> List[Dict[str, Any]]:
+        """
+        Retrieves the top supply and demand data.
+
+        Args:
+            show_all (bool): If True, fetches all supply/demand data, not just the top. Defaults to False.
+
+        Returns:
+            List[Dict[str, Any]]: A list of supply and demand data.
+        """
+        logger.info(f"Fetching supply and demand data, show_all: {show_all}")
+        endpoint = api_dict['supply_demand_api']
+        params = {'all': str(show_all).lower()}
         response = self.session.get(endpoint['api'], params=params)
+        return response.json()
+
+
+    def get_top_by_trade_quantity(self, show_all: bool = False) -> List[Dict[str, Any]]:
+        """
+        Retrieves the top securities ranked by trade quantity.
+
+        Args:
+            show_all (bool): If True, fetches all data, not just the top ten. Defaults to False.
+
+        Returns:
+            List[Dict[str, Any]]: A list of securities ranked by trade quantity.
+        """
+        logger.info(f"Fetching top stocks by trade quantity, show_all: {show_all}")
+        endpoint = api_dict['top_trade_qty_api']
+        params = {'all': str(show_all).lower()}
+        response = self.session.get(endpoint['api'], params=params)
+        return response.json()
+
+    def get_trading_average(self, n_days: int = 120, business_date: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Retrieve the trading average for a specified number of days.
+
+        Args:
+            n_days (int): The number of days to include in the trading average calculation (must be between 1 and 180). 
+                          Defaults to 120.
+            business_date (str, optional): The end date for the calculation in "YYYY-MM-DD" format. 
+                                           Defaults to the latest date.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries containing the trading average data.
+            
+        Raises:
+            ValueError: If n_days is not between 1 and 180.
+        """
+        if not (1 <= n_days <= 180):
+            raise ValueError("n_days must be between 1 and 180.")
+
+        logger.info(f"Fetching trading average for {n_days} days, ending on {business_date or 'latest'}")
+        endpoint = api_dict['trading_average_api']
+        
+        params = {
+            "nDays": n_days,
+            "businessDate": business_date,
+            "page": "0", 
+            "size": "500" # Use a large size to get all data
+        }
+        
+        response = self.session.get(endpoint['api'], params=params)
+        return response.json()
+
+
+    def get_notices(self) -> List[Dict[str, Any]]:
+        """
+        Retrieves general notices from NEPSE.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, each representing a notice.
+        """
+        logger.info("Fetching general notices.")
+        endpoint = api_dict['notice_api']
+        response = self.session.get(endpoint['api'])
+        return response.json()
+
+    def get_info_officers(self) -> List[Dict[str, Any]]:
+        """
+        Retrieves a list of information officers from NEPSE.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, each representing an information officer.
+        """
+        logger.info("Fetching list of information officers.")
+        endpoint = api_dict['info_officer_api']
+        response = self.session.get(endpoint['api'])
         return response.json()

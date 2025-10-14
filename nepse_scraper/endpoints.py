@@ -29,7 +29,7 @@ api_dict = {
     "security_daily_trade_stat_api": {"api": "/api/nots/securityDailyTradeStat", "method": "GET"},
     "securities_list_api": {"api": "/api/nots/securities", "method": "GET"},
     "supply_demand_api": {"api": "/api/nots/nepse-data/supplydemand", "method": "GET"},
-    "market_depth_api": {"api": "/api/nots/nepse-data/marketdepth", "method": "GET"},
     "top_trade_qty_api": {"api": "/api/nots/top-ten/trade-qty", "method": "GET"},
-    
+    "notice_api": {"api": "/api/web/notice/", "method": "GET"},
+    "info_officer_api": {"api": "/api/web/info-officer", "method": "GET"},
 }
