@@ -197,7 +197,7 @@ TEST_CASES = [
 
 def run_tests():
     print("Initializing NepseScraper client for integration tests...")
-    scraper = NepseScraper(verify_ssl=False) # Setting verify_ssl=False to hide warnings for now
+    scraper = NepseScraper() # Setting verify_ssl=False to hide warnings for now
     passed_count = 0
     failed_count = 0
 
