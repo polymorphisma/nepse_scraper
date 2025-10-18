@@ -85,7 +85,7 @@ TEST_CASES = [
         "name": "Get Broker List",
         "method": "get_brokers",
         "kwargs": {},
-        "validator": lambda r: isinstance(r, dict) and 'content' in r and isinstance(r['content'], list)
+        "validator": lambda r: isinstance(r, list)
     },
     # Index Data
     {
@@ -177,6 +177,21 @@ TEST_CASES = [
         "kwargs": {},
         "validator": lambda r: isinstance(r, dict)
     },
+    # Test case for the resgister endpoint
+
+    {
+        "name": "Register and Call a Custom Endpoint",
+        "method": "call_endpoint",
+        # The 'setup' key is a special instruction for our test runner.
+        # It will execute this lambda function before calling the main method.
+        "setup": lambda scraper: scraper.register_endpoint(
+            name='is_open_test', 
+            path='/api/nots/nepse-data/market-open', 
+            method='GET'
+        ),
+        "kwargs": {"name": "is_open_test"},
+        "validator": lambda r: isinstance(r, dict) and 'isOpen' in r
+    },
 ]
 
 
@@ -197,9 +212,13 @@ def run_tests():
         print(f"[*] Testing: {name} (Method: {method_name})")
 
         try:
+            # Handling the option setup
+            if "setup" in test:
+                test["setup"](scraper)
+
             method_to_call = getattr(scraper, method_name)
             response = method_to_call(**kwargs)
-
+            
             if validator(response):
                 print(f"    [PASSED]\n")
                 passed_count += 1
@@ -210,8 +229,8 @@ def run_tests():
         except Exception as e:
             print(f"    [FAILED] - An exception occurred: {e}\n")
             failed_count += 1
-
-    print("="*40 + f"\nTest Summary: {passed_count} PASSED, {failed_count} FAILED\n")
+        finally: 
+            print("="*40 + f"\nTest Summary: {passed_count} PASSED, {failed_count} FAILED\n")
 
 
 if __name__ == "__main__":

@@ -18,6 +18,9 @@ class NepseScraper:
         self.session = NepseAPISession(verify_ssl=verify_ssl)
         self._security_map: Optional[Dict[str, int]] = None
         self._sector_map: Optional[Dict[str, int]] = None
+
+        # for registring option
+        self.endpoints = api_dict.copy() 
         logger.info("NepseScraper client initialized.")
 
     # =========================================================================
@@ -31,11 +34,13 @@ class NepseScraper:
             return self._security_map
 
         logger.info("Fetching all security listings to build symbol-to-id map.")
-        endpoint = api_dict['security_api']
+        ## MODIFIED: Use self.endpoints to respect user customizations.
+        endpoint = self.endpoints['security_api']
         response = self.session.get(endpoint['api'])
         securities = response.json()
         self._security_map = {item.get('symbol'): item.get('id') for item in securities}
         return self._security_map
+
 
     def _resolve_ticker_ids(self, tickers: List[str]) -> Dict[str, int]:
         """Resolves a list of ticker symbols to their security IDs."""
@@ -46,6 +51,64 @@ class NepseScraper:
             logger.error(f"Could not find security IDs for the following tickers: {missing}")
             raise ValueError(f"Ticker(s) not found: {missing}")
         return resolved_tickers
+
+    # =========================================================================
+    # Extensibility Methods
+    # =========================================================================
+
+    def register_endpoint(self, name: str, path: str, method: str = 'GET'):
+        """
+        Dynamically registers a new API endpoint.
+
+        This allows users to access new or custom NEPSE API endpoints that are
+        not yet officially supported by the library.
+
+        Args:
+            name: A unique name for the endpoint (e.g., 'new_market_data').
+            path: The API path (e.g., '/api/nots/new-data-point').
+            method: The HTTP method, 'GET' or 'POST'. Defaults to 'GET'.
+        """
+        if name in self.endpoints:
+            logger.warning(f"Endpoint '{name}' already exists. Overwriting.")
+        
+        self.endpoints[name] = {"api": path, "method": method.upper()}
+        logger.info(f"Successfully registered new endpoint: '{name}'")
+
+    def call_endpoint(self, name: str, params: Optional[Dict] = None, payload: Optional[Dict] = None, which_payload: Optional[str] = None) -> Any:
+        """
+        Calls a registered endpoint by its name.
+
+        This is a generic method to interact with both built-in and
+        user-registered endpoints.
+
+        Args:
+            name: The name of the endpoint to call.
+            params: A dictionary of query string parameters for the request.
+            payload: A dictionary for the JSON request body.
+            which_payload (str, optional): The type of dynamic payload to generate ('stock-live' or 'sector-live').
+
+        Returns:
+            The JSON response from the API.
+            
+        Raises:
+            ValueError: If the endpoint name is not found or the method is unsupported.
+        """
+        logger.info(f"Calling generic endpoint: '{name}'")
+        if name not in self.endpoints:
+            raise ValueError(f"Endpoint '{name}' not found. Please register it first using the register_endpoint method.")
+            
+        endpoint_info = self.endpoints[name]
+        method = endpoint_info['method']
+        path = endpoint_info['api']
+
+        if method == 'GET':
+            response = self.session.get(path, params=params)
+        elif method == 'POST':
+            response = self.session.post(path, params=params, payload=payload, which_payload=which_payload)
+        else:
+            raise ValueError(f"Unsupported HTTP method '{method}' for endpoint '{name}'.")
+            
+        return response.json()
 
     # =========================================================================
     # Public API Methods
@@ -59,7 +122,7 @@ class NepseScraper:
             bool: True if the market is open, False otherwise.
         """
         logger.info("Checking market status.")
-        endpoint = api_dict['marketopen_api']
+        endpoint = self.endpoints['marketopen_api'] # Use self.endpoints
         response = self.session.get(endpoint['api'])
         return response.json().get('isOpen', 'CLOSE') == 'OPEN'
 
@@ -75,7 +138,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each representing a security's price data for the day.
         """
         logger.info(f"Fetching today's price for date: {business_date or 'latest'}")
-        endpoint = api_dict['today_price_api']
+        endpoint = self.endpoints['today_price_api']
         params = {"page": "0", "size": "500", "businessDate": business_date}
         response = self.session.post(endpoint['api'], params=params)
         return response.json().get('content', [])
@@ -100,7 +163,7 @@ class NepseScraper:
         if category not in valid_categories:
             raise ValueError(f"Invalid category: {category}. Must be one of {valid_categories}")
         
-        endpoint = api_dict[category]
+        endpoint = self.endpoints[category]
         params = {'all': str(show_all).lower()}
         response = self.session.get(endpoint['api'], params=params)
         return response.json()
@@ -127,7 +190,7 @@ class NepseScraper:
         logger.info(f"Fetching ticker info for: {ticker_list}")
         
         ticker_ids = self._resolve_ticker_ids(ticker_list)
-        endpoint_info = api_dict['ticker_info_api']
+        endpoint_info = self.endpoints['ticker_info_api']
         base_path = endpoint_info['api']
         results = {}
 
@@ -150,7 +213,7 @@ class NepseScraper:
             return []
             
         logger.info("Fetching live trades.")
-        endpoint = api_dict['stock_live_api']
+        endpoint = self.endpoints['stock_live_api']
         response = self.session.post(endpoint['api'], which_payload='stock-live')
         return response.json()
 
@@ -167,7 +230,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of historical data points for the index.
         """
         logger.info(f"Fetching historical data for index ID: {index_id}")
-        endpoint = api_dict['head_indices_api']
+        endpoint = self.endpoints['head_indices_api']
         path = f"{endpoint['api']}/{index_id}"
         params = {'startDate': start_date, 'endDate': end_date}
         response = self.session.get(path, params=params)
@@ -181,7 +244,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A JSON response from the NEPSE API containing the sector-wise summary.
         """
         logger.info("Fetching sector-wise summary.")
-        endpoint = api_dict['sectorwise_summary_api']
+        endpoint = self.endpoints['sectorwise_summary_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -193,7 +256,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A JSON response containing the historical market summary.
         """
         logger.info("Fetching historical market summary.")
-        endpoint = api_dict['market_summary_history_api']
+        endpoint = self.endpoints['market_summary_history_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -205,7 +268,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of news and announcements.
         """
         logger.info("Fetching company disclosures.")
-        endpoint = api_dict['disclosure']
+        endpoint = self.endpoints['disclosure']
         response = self.session.get(endpoint['api'])
         return response.json().get('news', [])
 
@@ -217,7 +280,7 @@ class NepseScraper:
             Dict[str, Any]: A dictionary containing the current market summary.
         """
         logger.info("Fetching current market summary.")
-        endpoint = api_dict['market_summary_api']
+        endpoint = self.endpoints['market_summary_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -229,7 +292,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each with details of a security.
         """
         logger.info("Fetching all securities.")
-        endpoint = api_dict['security_api']
+        endpoint = self.endpoints['security_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -241,48 +304,27 @@ class NepseScraper:
             List[Dict[str, Any]]: A list containing market capitalization data.
         """
         logger.info("Fetching market capitalization data.")
-        endpoint = api_dict['marketcap_api']
+        endpoint = self.endpoints['marketcap_api']
         response = self.session.get(endpoint['api'])
         return response.json()
-
-    def get_brokers(self, member_name: str = "", contact_person: str = "", contact_number: str = "", member_code: str = "", province_id: int = 0, district_id: int = 0, municipality_id: int = 0) -> List[Dict[str, Any]]:
-        """
-        Fetches a list of all registered brokers from NEPSE with optional filters.
-
-        Args:
-            member_name (str, optional): The name of the broker member. Defaults to "".
-            contact_person (str, optional): The contact person name of the broker. Defaults to "".
-            contact_number (str, optional): The contact number of the broker. Defaults to "".
-            member_code (str, optional): The code of the broker member. Defaults to "".
-            province_id (int, optional): The ID of the province where the broker is located. Defaults to 0.
-            district_id (int, optional): The ID of the district where the broker is located. Defaults to 0.
-            municipality_id (int, optional): The ID of the municipality where the broker is located. Defaults to 0.
-
-        Returns:
-            List[Dict[str, Any]]: A list of dictionaries containing broker information.
-        """
-        logger.info(f"Fetching list of brokers with filters: member_name={member_name}, contact_person={contact_person}, contact_number={contact_number}, member_code={member_code}, province_id={province_id}, district_id={district_id}, municipality_id={municipality_id}")
-        
-        endpoint = api_dict['broker_api']
+    def get_brokers(self, **kwargs) -> List[Dict[str, Any]]:
+        """Fetches a list of all registered brokers from NEPSE with optional filters."""
+        logger.info(f"Fetching list of brokers with filters: {kwargs}")
+        endpoint = self.endpoints['broker_api']
         
         # Construct parameters with the filters
-        params = {
-            "memberName": member_name,
-            "contactPerson": contact_person,
-            "contactNumber": contact_number,
-            "memberCode": member_code,
-            "provinceId": province_id,
-            "districtId": district_id,
-            "municipalityId": municipality_id,
-            "page": "0",  # Default pagination
-            "size": "500"  # Default pagination
+        payload = {
+            "memberName": kwargs.get("member_name", ""),
+            "contactPerson": kwargs.get("contact_person", ""),
+            "contactNumber": kwargs.get("contact_number", ""),
+            "memberCode": kwargs.get("member_code", ""),
+            "provinceId": kwargs.get("province_id", 0),
+            "districtId": kwargs.get("district_id", 0),
+            "municipalityId": kwargs.get("municipality_id", 0)
         }
-        
-        # Send a GET request to the API endpoint with the parameters
-        response = self.session.get(endpoint['api'], params=params)
-        
-        # Return the JSON response
-        return response.json()
+        params = {"page": "0", "size": "500"}
+        response = self.session.post(endpoint['api'], payload=payload, params=params)
+        return response.json().get('content', [])
 
     def get_sectors(self) -> List[Dict[str, Any]]:
         """
@@ -292,7 +334,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each containing sector details.
         """
         logger.info("Fetching list of all sectors.")
-        endpoint = api_dict['sector_api']
+        endpoint = self.endpoints['sector_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -304,7 +346,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries containing sector index data.
         """
         logger.info("Fetching list of all sector indices.")
-        endpoint = api_dict['sector_index_api']
+        endpoint = self.endpoints['sector_index_api']
         response = self.session.get(endpoint['api'])
         return response.json()
         
@@ -326,7 +368,7 @@ class NepseScraper:
              raise ValueError(f"'{index_id}' is not a valid index ID. Must be between 51 and 67.")
 
         logger.info(f"Fetching live data for index ID: {index_id}")
-        endpoint = api_dict['indices_live_api']
+        endpoint = self.endpoints['indices_live_api']
         path = f"{endpoint['api']}/{index_id}"
         response = self.session.post(path, which_payload='sector-live')
         return response.json()
@@ -352,7 +394,7 @@ class NepseScraper:
         logger.info(f"Fetching contact info for: {ticker_list}")
 
         ticker_ids = self._resolve_ticker_ids(ticker_list)
-        endpoint = api_dict['ticker_contact_api']
+        endpoint = self.endpoints['ticker_contact_api']
         base_path = endpoint['api']
         results = {}
 
@@ -381,7 +423,7 @@ class NepseScraper:
         logger.info(f"Fetching price history for ticker: {ticker_upper}")
         
         ticker_id = self._resolve_ticker_ids([ticker_upper])[ticker_upper]
-        endpoint = api_dict['ticker_price_api']
+        endpoint = self.endpoints['ticker_price_api']
         
         path = f"{endpoint['api']}/{ticker_id}"
         
@@ -406,7 +448,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each representing an index.
         """
         logger.info("Fetching NEPSE index data.")
-        endpoint = api_dict['nepse_index_api']
+        endpoint = self.endpoints['nepse_index_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -423,7 +465,7 @@ class NepseScraper:
         ticker_upper = ticker.upper()
         logger.info(f"Fetching daily trade statistics for ticker: {ticker_upper}")
         ticker_id = self._resolve_ticker_ids([ticker_upper])[ticker_upper]
-        endpoint = api_dict['security_daily_trade_stat_api']
+        endpoint = self.endpoints['security_daily_trade_stat_api']
         path = f"{endpoint['api']}/{ticker_id}"
         response = self.session.get(path)
         return response.json()
@@ -436,7 +478,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each representing a security.
         """
         logger.info("Fetching the simplified list of securities.")
-        endpoint = api_dict['securities_list_api']
+        endpoint = self.endpoints['securities_list_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -451,7 +493,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of supply and demand data.
         """
         logger.info(f"Fetching supply and demand data, show_all: {show_all}")
-        endpoint = api_dict['supply_demand_api']
+        endpoint = self.endpoints['supply_demand_api']
         params = {'all': str(show_all).lower()}
         response = self.session.get(endpoint['api'], params=params)
         return response.json()
@@ -468,7 +510,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of securities ranked by trade quantity.
         """
         logger.info(f"Fetching top stocks by trade quantity, show_all: {show_all}")
-        endpoint = api_dict['top_trade_qty_api']
+        endpoint = self.endpoints['top_trade_qty_api']
         params = {'all': str(show_all).lower()}
         response = self.session.get(endpoint['api'], params=params)
         return response.json()
@@ -493,7 +535,7 @@ class NepseScraper:
             raise ValueError("n_days must be between 1 and 180.")
 
         logger.info(f"Fetching trading average for {n_days} days, ending on {business_date or 'latest'}")
-        endpoint = api_dict['trading_average_api']
+        endpoint = self.endpoints['trading_average_api']
         
         params = {
             "nDays": n_days,
@@ -514,7 +556,7 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each representing a notice.
         """
         logger.info("Fetching general notices.")
-        endpoint = api_dict['notice_api']
+        endpoint = self.endpoints['notice_api']
         response = self.session.get(endpoint['api'])
         return response.json()
 
@@ -526,6 +568,6 @@ class NepseScraper:
             List[Dict[str, Any]]: A list of dictionaries, each representing an information officer.
         """
         logger.info("Fetching list of information officers.")
-        endpoint = api_dict['info_officer_api']
+        endpoint = self.endpoints['info_officer_api']
         response = self.session.get(endpoint['api'])
         return response.json()
