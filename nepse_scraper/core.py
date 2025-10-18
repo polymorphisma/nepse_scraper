@@ -11,6 +11,7 @@ from urllib3.exceptions import InsecureRequestWarning
 
 from .auth import PayloadParser, TokenParser
 from .endpoints import api_dict
+from .exceptions import SSLCertVerificationError, NepseScraperException
 
 logger = logging.getLogger(__name__)
 ROOT_URL = 'https://www.nepalstock.com'
@@ -63,6 +64,14 @@ class NepseAPISession:
             self.access_token, _ = self._token_parser.parse_token_response(token_response)
             self.token_details = token_response
             logger.info("Successfully authenticated and stored new token.")
+        except requests.exceptions.SSLError as e:
+            logger.error(f"SSL Certificate Verification failed: {e}", exc_info=True)
+            # Returing custom exception for ssl verification.
+            raise SSLCertVerificationError(
+                "SSL certificate verification failed. This is likely due to the NEPSE server's "
+                "incomplete certificate chain or a network proxy. "
+                "Try initializing the client with: NepseScraper(verify_ssl=False)"
+            ) from e
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to authenticate with NEPSE API: {e}", exc_info=True)
             raise e
