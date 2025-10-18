@@ -1,6 +1,6 @@
 [project]
 name = "nepse-scraper"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = [
     {name = "polymorphisma",email = "shrawansunar.6@gmail.com"}

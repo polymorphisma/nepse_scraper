@@ -1,71 +1,134 @@
+
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/nepse-scraper?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/nepse-scraper)
-# Nepse scraper
-> Python module that provides convenient access to the Nepal Stock Exchange (NEPSE) API, enabling developers and analysts to retrieve stock market data and improve investment decisions.
+[![PyPI version](https://badge.fury.io/py/nepse-scraper.svg)](https://badge.fury.io/py/nepse-scraper)
 
-> If you're looking for more detailed documentation on how to use my project called "nepse_scraper," I would recommend checking out the project's GitHub page at [https://github.com/polymorphisma/nepse_scraper/].
+# Nepse Scraper
 
-# Table of content
-- [Introduction](#introduction)
-- [Features](#features)
+A robust and feature-complete Python client for the Nepal Stock Exchange (NEPSE) API.
+
+`nepse-scraper` provides a clean, high-level interface to access real-time and historical stock market data, enabling developers, analysts, and investors to build powerful financial applications and analysis tools.
+
+## Table of Contents
 - [Installation](#installation)
-  - [Using Pip](#using-pip)
-- [Usage](#usage)
-- [Documentation](/docs/index.md)
+- [Quick Start & Important SSL/TLS Note](#quick-start--important-ssltls-note)
+- [Advanced Usage](#advanced-usage)
+  - [Extensibility: Using Custom Endpoints](#extensibility-using-custom-endpoints)
+- [Key Features](#key-features)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
 - [License](#license)
-
-## Introduction
-Welcome to **nepse_scraper**, the Python module that provides easy access to the Nepal Stock Exchange (NEPSE) API. With just a few lines of code, you can retrieve today's stock prices, market summary, head indices and etc to help you make better investment decisions. The code is well-documented and organized, making it easy to understand and modify for your specific use case.
-
-**nepse_scraper** is open-source, which means you can contribute and improve the code by adding new functions to retrieve additional data, enhancing existing functions with more options, or improving the error handling and exception handling to make it more robust. Your contributions can help make **nepse_scraper** even more useful for developers and analysts who work with data from the Nepal Stock Exchange.
-
-So what are you waiting for? Try out **nepse_scraper** and see how it can simplify your stock market analysis and investment strategies.
-
-
-## Features
-- Get Today Price
-- Get Head Indices
-- Get Market Summary
-- Get Sector Summary
-- Get Sector Detail
-- Get Broker Details
-- Get News
-- Many More ....
-<!-- - Get Top Gainer
-- Get Top Loser
-- Get Top Trade
-- Get Top Transaction
-- Get Top Turnover
-- Get Today Market Summary
-- Get Security Detail
-- Get Marketcap
-- Get Trading Average -->
-
 
 ## Installation
 
-### Using Pip
-```
+Install the package directly from PyPI:
+```bash
 pip install nepse-scraper
 ```
 
+## Quick Start & Important SSL/TLS Note
 
-## Usage
-```py
-from nepse_scraper import Nepse_scraper
+Here's how to get started with just a few lines of code.
 
-# create object from Nepse_scraper class
-request_obj = Nepse_scraper()
+> ### **:warning: Important Note on SSL/TLS Verification**
+> 
+> The official NEPSE server has a known issue where it does not provide a complete SSL/TLS certificate chain. This will cause `SSLCertVerificationError` connection errors in most standard Python environments.
+> 
+> <span style="color:red">**It is highly recommended to initialize the client with `verify_ssl=False` to ensure a successful connection.**</span>
+> 
+> ```python
+> from nepse_scraper import NepseScraper
+> 
+> # Recommended initialization:
+> scraper = NepseScraper(verify_ssl=False)
+> ```
 
-# getting today's price from nepse
-today_price = request_obj.get_today_price()
-print(today_price)
+### Basic Usage
 
-# "Please refer to the documentation for more detailed usage instructions."
+```python
+from nepse_scraper import NepseScraper
+
+# 1. Initialize the client (with SSL verification disabled as recommended)
+scraper = NepseScraper(verify_ssl=False)
+
+# 2. Check if the market is open
+is_open = scraper.is_market_open()
+print(f"Is the NEPSE market open? {'Yes' if is_open else 'No'}")
+
+# 3. Fetch today's price data for all companies
+try:
+    today_prices = scraper.get_today_price()
+    if today_prices:
+        print(f"\nFetched {len(today_prices)} records for today's price.")
+        # Find and print the record for a specific symbol
+        aclbsl_data = next((item for item in today_prices if item['symbol'] == 'ACLBSL'), None)
+        if aclbsl_data:
+            print("Example record for ACLBSL:")
+            print(aclbsl_data)
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+# 4. Get detailed information for a specific ticker
+nabil_info = scraper.get_ticker_info('NABIL')
+print("\nFetched Ticker Info for NABIL:")
+print(nabil_info.get('security', {}).get('securityName'))
 ```
 
+## Advanced Usage
+
+### Extensibility: Using Custom Endpoints
+
+The NEPSE API may change or have undocumented endpoints. `nepse-scraper` allows you to dynamically register and call any endpoint at runtime.
+
+```python
+# 1. Initialize the client
+scraper = NepseScraper(verify_ssl=False)
+
+# 2. Register a new or custom endpoint
+#    (Using an existing endpoint as an example with a new name)
+scraper.register_endpoint(
+    name='custom_market_status', 
+    path='/api/nots/nepse-data/market-open', 
+    method='GET'
+)
+
+# 3. Call your custom endpoint using the generic `call_endpoint` method
+custom_response = scraper.call_endpoint(name='custom_market_status')
+print("\nResponse from custom endpoint 'custom_market_status':")
+print(custom_response)
+```
+
+## Key Features
+
+- **Complete API Coverage**: Access to all major NEPSE endpoints.
+- **Robust & Resilient**: Built-in smart retries for handling transient network and server errors.
+- **Secure by Default**: Enforces secure SSL connections, with a clear, configurable option for known server/network issues.
+- **Extensible**: Dynamically add and call new or undocumented API endpoints at runtime.
+- **Modern Architecture**: Fully typed, decoupled, and built on a high-performance session-based core.
+- **User-Friendly Errors**: Catches common connection problems and provides clear, actionable error messages.
+
+### Available Data
+- **Market Status**: Check if the market is open.
+- **Live Data**: Get live trades and real-time index graphs.
+- **Daily Data**: Fetch today's prices and market summaries.
+- **Historical Data**: Access historical prices for tickers and indices.
+- **Company Info**: Retrieve security details, contact information, and corporate disclosures/notices.
+- **Top Stocks**: Get lists of top gainers, losers, turnover, trade volume, transactions, and more.
+- **And much more...**
+
+## Documentation
+
+
+For a more detailed API reference and examples, please see the [**Documentation (`docs/index.md`)**](./docs/index.md).
+
+The source code in `nepse_scraper/client.py` is also extensively documented with docstrings and type hints.
+
+## Contributing
+
+Contributions are welcome! Whether it's adding new features, improving documentation, or reporting bugs, please feel free to open an issue or submit a pull request on our [GitHub repository](https://github.com/polymorphisma/nepse_scraper/).
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE.txt](LICENSE.txt) file for details.
 
-**Free Software, Hell Yeah!**
+**Happy Cod1ng!**
