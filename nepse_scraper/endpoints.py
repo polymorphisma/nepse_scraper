@@ -24,6 +24,12 @@ api_dict = {
     "security":{"api":"/api/nots/security", "method":"GET"},
     "ticker_info_api":{"api":"/api/nots/security", "method":"POST"},
     "ticker_contact_api":{"api":"/api/nots/security/profile", "method":"GET"},
-    "ticker_price_api":{"api":"/api/nots/market/security/price","method":"GET"}
-    
+    "ticker_price_api":{"api":"/api/nots/market/security/price","method":"GET"},
+    "nepse_index_api": {"api": "/api/nots/nepse-index", "method": "GET"},
+    "security_daily_trade_stat_api": {"api": "/api/nots/securityDailyTradeStat", "method": "GET"},
+    "securities_list_api": {"api": "/api/nots/securities", "method": "GET"},
+    "supply_demand_api": {"api": "/api/nots/nepse-data/supplydemand", "method": "GET"},
+    "top_trade_qty_api": {"api": "/api/nots/top-ten/trade-qty", "method": "GET"},
+    "notice_api": {"api": "/api/web/notice/", "method": "GET"},
+    "info_officer_api": {"api": "/api/web/info-officer", "method": "GET"},
 }
